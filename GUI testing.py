@@ -167,20 +167,25 @@ def add_row():
 def delete_row():
     for row_s, row in reversed(list(enumerate(rows))):
         if row[0].val.get() == 1:
-            for i in row:
-                i.destroy()
+            for integer in row:
+                integer.destroy()
             rows.pop(row_s)
 
 
 def edit_row():
-    global num_rows
+    global num_rows, selected
     num_rows = 0
+    selected = []
     for row_s, row in reversed(list(enumerate(rows))):
         if row[0].val.get() == 1:
-            for i in row:
+            selected.append(1)
+            for integer in row:
                 num_rows += 0.2
+        else:
+            selected.append(0)
     num_rows = round(num_rows)
     print(num_rows)
+    print(selected)
 
 
 # login page
