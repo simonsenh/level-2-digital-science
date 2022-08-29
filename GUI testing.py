@@ -55,6 +55,11 @@ def go_login(frame):
     login.grid(row=0, column=0)
 
 
+def go_input_page(frame):
+    frame.grid_forget()
+    input_page.grid(row=0, column=0)
+
+
 def login_func():
     username_test = username_login_entry.get()
     password_test = password_login_entry.get()
@@ -270,30 +275,30 @@ edit_row_button.grid(row=0, column=2)
 cancel_button_input = ttk.Button(input_page, text="cancel", width=10, command=lambda: go_main_menu(input_page))
 cancel_button_input.grid(row=0, column=3)
 
-v0 = StringVar()
-e0 = Entry(input_page, textvariable=v0, state='readonly')
-v0.set('Select')
-e0.grid(row=1, column=0)
+var_0 = StringVar()
+entry_0 = Entry(input_page, textvariable=var_0, state='readonly')
+var_0.set('Select')
+entry_0.grid(row=1, column=0)
 
-v1 = StringVar()
-e1 = Entry(input_page, textvariable=v1, state='readonly')
-v1.set('Spending category')
-e1.grid(row=1, column=1)
+var_1 = StringVar()
+entry_1 = Entry(input_page, textvariable=var_1, state='readonly')
+var_1.set('Spending category')
+entry_1.grid(row=1, column=1)
 
-v2 = StringVar()
-e2 = Entry(input_page, textvariable=v2, state='readonly')
-v2.set('Spending type')
-e2.grid(row=1, column=2)
+var_2 = StringVar()
+entry_2 = Entry(input_page, textvariable=var_2, state='readonly')
+var_2.set('Spending type')
+entry_2.grid(row=1, column=2)
 
-v3 = StringVar()
-e3 = Entry(input_page, textvariable=v3, state='readonly')
-v3.set('Amount')
-e3.grid(row=1, column=3)
+var_3 = StringVar()
+entry_3 = Entry(input_page, textvariable=var_3, state='readonly')
+var_3.set('Amount')
+entry_3.grid(row=1, column=3)
 
-v4 = StringVar()
-e4 = Entry(input_page, textvariable=v4, state='readonly')
-v4.set('Time per payment')
-e4.grid(row=1, column=4)
+var_4 = StringVar()
+entry_4 = Entry(input_page, textvariable=var_4, state='readonly')
+var_4.set('Time per payment')
+entry_4.grid(row=1, column=4)
 
 # budget
 cancel_button_budget = ttk.Button(budget, text="cancel", width=10, command=lambda: go_main_menu(budget))
