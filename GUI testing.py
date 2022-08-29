@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import ttk
+import pickle
 
 # setting up the main window
 main = Tk()
@@ -52,15 +53,43 @@ def go_login(frame):
 
 
 def login_func():
-    global username, password
-    valid = True
     username_test = username_login_entry.get()
     password_test = password_login_entry.get()
-    if username_test != username:
-        valid = False
-    elif password_test != password:
-        valid = False
-    elif valid is True:
+    username_passwords = pickle.load(open("names.dat", "rb"))
+    counter_2 = 0
+    found = 0
+    valid = 0
+    check_user = 0
+    check_pass = 0
+    while found == 0:
+        try:
+            if username_test == username_passwords[0][counter_2]:
+                check_user = counter_2
+                found = 1
+            else:
+                counter_2 += 1
+        except:
+            found = 2
+    if found != 1:
+        error_message_login.config(text="WRONG USERNAME!")
+    else:
+        valid += 1
+    counter_2 = 0
+    found = 0
+    while found == 0:
+        try:
+            if password_test == username_passwords[1][counter_2]:
+                check_pass = counter_2
+                found = 1
+            else:
+                counter_2 += 1
+        except:
+            found = 2
+    if found != 1:
+        error_message_login.config(text="WRONG PASSWORD!")
+    else:
+        valid += 1
+    if valid == 2:
         login.grid_forget()
         main_menu.grid(row=0, column=0)
 
@@ -72,30 +101,27 @@ def signup_func():
 
 
 def signup_button_func():
-    global username2, password2, password3
-    valid = True
-    username2 = username_signup_entry.get()
-    password2 = password_signup_entry.get()
-    password3 = password_signup_entry_check.get()
-    if password2 != password3:
+    global username, password, password2
+    username = username_signup_entry.get()
+    password = password_signup_entry.get()
+    password2 = password_signup_entry_check.get()
+    if password != password2:
         error_message.config(text="PASSWORDS NEED TO MATCH!                                                                    ")
-        valid = False
-    elif len(username2) > 20:
+    elif len(username) > 20:
         error_message.config(text="USERNAME NEEDS TO BE LESS THAN TWENTY CHARACTERS!")
-        valid = False
-    elif len(username2) < 8:
+    elif len(username) < 8:
         error_message.config(text="USERNAME NEEDS TO BE MORE THAN EIGHT CHARACTERS! ")
-        valid = False
-    elif len(password2) < 8:
+    elif len(password) < 8:
         error_message.config(text="PASSWORD NEEDS TO BE MORE THAN EIGHT CHARACTERS! ")
-        valid = False
-    elif len(password2) > 20:
+    elif len(password) > 20:
         error_message.config(text="PASSWORD NEEDS TO BE LESS THAN TWENTY CHARACTERS!")
-        valid = False
-    elif valid is True:
-        username2 = username
-        password2 = password
+    else:
+        username_passwords = pickle.load(open("names.dat", "rb"))
+        username_passwords[0].append(username)
+        username_passwords[1].append(password)
+        pickle.dump(username_passwords, open("names.dat", "wb"))
         signup.grid_forget()
+        login.grid(row=0, column=0)
 
 
 def input_page_func():
@@ -159,10 +185,13 @@ password_login_entry = ttk.Entry(login)
 password_login_entry.grid(row=1, column=1)
 
 login_button = ttk.Button(login, text="login", width=10, command=lambda: login_func())
-login_button.grid(row=2, column=0)
+login_button.grid(row=3, column=0)
 
 signup_button = ttk.Button(login, text="sign up", width=10, command=lambda: signup_func())
-signup_button.grid(row=2, column=1)
+signup_button.grid(row=3, column=1)
+
+error_message_login = ttk.Label(login, text="", foreground="red")
+error_message_login.grid(row=2, column=0)
 
 # signup page
 signup_title = ttk.Label(signup, text="TITLE")
@@ -252,3 +281,11 @@ cancel_button_tips = ttk.Button(tips, text="cancel", width=10, command=lambda: g
 cancel_button_tips.grid(row=0, column=0)
 
 main.mainloop()
+
+# load file
+yes_no = input("do you want to load file?")
+if yes_no == "yes":
+    show = pickle.load(open("names.dat", "rb"))
+    print(show)
+else:
+    print("ok")
