@@ -53,13 +53,14 @@ def go_login(frame):
 
 def login_func():
     global username, password
+    valid = True
     username_test = username_login_entry.get()
     password_test = password_login_entry.get()
-    if username_test == "Simonsenh":
-        username = "Simonsenh"
-    if password_test == "123":
-        password = "123"
-    if username == "Simonsenh" and password == "123":
+    if username_test != username:
+        valid = False
+    elif password_test != password:
+        valid = False
+    elif valid is True:
         login.grid_forget()
         main_menu.grid(row=0, column=0)
 
@@ -72,9 +73,29 @@ def signup_func():
 
 def signup_button_func():
     global username2, password2, password3
+    valid = True
     username2 = username_signup_entry.get()
     password2 = password_signup_entry.get()
     password3 = password_signup_entry_check.get()
+    if password2 != password3:
+        error_message.config(text="PASSWORDS NEED TO MATCH!                                                                    ")
+        valid = False
+    elif len(username2) > 20:
+        error_message.config(text="USERNAME NEEDS TO BE LESS THAN TWENTY CHARACTERS!")
+        valid = False
+    elif len(username2) < 8:
+        error_message.config(text="USERNAME NEEDS TO BE MORE THAN EIGHT CHARACTERS! ")
+        valid = False
+    elif len(password2) < 8:
+        error_message.config(text="PASSWORD NEEDS TO BE MORE THAN EIGHT CHARACTERS! ")
+        valid = False
+    elif len(password2) > 20:
+        error_message.config(text="PASSWORD NEEDS TO BE LESS THAN TWENTY CHARACTERS!")
+        valid = False
+    elif valid is True:
+        username2 = username
+        password2 = password
+        signup.grid_forget()
 
 
 def input_page_func():
@@ -166,10 +187,13 @@ password_signup_entry_check = ttk.Entry(signup)
 password_signup_entry_check.grid(row=2, column=1)
 
 signup_page_button = ttk.Button(signup, text="sign up", width=10, command=lambda: signup_button_func())
-signup_page_button.grid(row=3, column=0)
+signup_page_button.grid(row=4, column=0)
 
 cancel_button = ttk.Button(signup, text="cancel", width=10, command=lambda: go_login(signup))
-cancel_button.grid(row=3, column=1)
+cancel_button.grid(row=4, column=1)
+
+error_message = ttk.Label(signup, text="", foreground="red")
+error_message.grid(row=3, column=0)
 
 # Main menu
 main_menu_title = ttk.Label(main_menu, text="TITLE")
