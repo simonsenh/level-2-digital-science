@@ -5,7 +5,7 @@ import pickle
 # setting up the main window
 main = Tk()
 main.title("Henry Simonsen Budgeting Software")
-main.geometry('500x500')
+main.geometry('700x500')
 
 # variables
 username = 0
@@ -33,6 +33,9 @@ main_menu.grid_forget()
 input_page = ttk.Frame(main)
 input_page.grid(row=0, column=0)
 input_page.grid_forget()
+edit_input = ttk.Frame(main)
+edit_input.grid(row=0, column=0)
+edit_input.grid_forget()
 budget = ttk.Frame(main)
 budget.grid(row=0, column=0)
 budget.grid_forget()
@@ -89,7 +92,11 @@ def login_func():
         error_message_login.config(text="WRONG PASSWORD!")
     else:
         valid += 1
-    if valid == 2:
+    if check_pass == check_user:
+        valid += 1
+    else:
+        error_message_login.config(text="WRONG PASSWORD!")
+    if valid == 3:
         login.grid_forget()
         main_menu.grid(row=0, column=0)
 
@@ -148,15 +155,12 @@ def add_row():
     check.val = var
     items.append(check)
     check.grid(row=counter, column=0)
-    c = 0
-    while c != 4:
-        if c == 0:
-            b = OptionMenu(input_page, clicked, *Spending_categories)
-        else:
-            b = Entry(input_page)
-        items.append(b)
-        b.grid(row=counter, column=(c + 1))
-        c += 1
+    counter_2 = 0
+    while counter_2 != 4:
+        entry = Entry(input_page)
+        items.append(entry)
+        entry.grid(row=counter, column=(counter_2 + 1))
+        counter_2 += 1
     rows.append(items)
 
 
@@ -166,6 +170,17 @@ def delete_row():
             for i in row:
                 i.destroy()
             rows.pop(row_s)
+
+
+def edit_row():
+    global num_rows
+    num_rows = 0
+    for row_s, row in reversed(list(enumerate(rows))):
+        if row[0].val.get() == 1:
+            for i in row:
+                num_rows += 0.2
+    num_rows = round(num_rows)
+    print(num_rows)
 
 
 # login page
@@ -238,14 +253,17 @@ tips_button = ttk.Button(main_menu, text="tips", width=10, command=lambda: tips_
 tips_button.grid(row=1, column=2)
 
 # input page
-cancel_button_input = ttk.Button(input_page, text="cancel", width=10, command=lambda: go_main_menu(input_page))
-cancel_button_input.grid(row=0, column=0)
-
 add_row_button = ttk.Button(input_page, text='Add Row', command=add_row)
 add_row_button.grid(row=0, column=0)
 
 delete_row_button = ttk.Button(input_page, text='Delete Row', command=delete_row)
 delete_row_button.grid(row=0, column=1)
+
+edit_row_button = ttk.Button(input_page, text="Edit Row", width=10, command=lambda: edit_row())
+edit_row_button.grid(row=0, column=2)
+
+cancel_button_input = ttk.Button(input_page, text="cancel", width=10, command=lambda: go_main_menu(input_page))
+cancel_button_input.grid(row=0, column=3)
 
 v0 = StringVar()
 e0 = Entry(input_page, textvariable=v0, state='readonly')
@@ -289,3 +307,5 @@ if yes_no == "yes":
     print(show)
 else:
     print("ok")
+
+# b = OptionMenu(input_page, clicked, *Spending_categories)
