@@ -1,190 +1,230 @@
-import tkinter as tk
 from tkinter import *
+from tkinter import ttk
 
-login_page = Tk()
-login_page.title("Login page")
-login_page_var = 0
+# setting up the main window
+main = Tk()
+main.title("Henry Simonsen Budgeting Software")
+main.geometry('500x500')
+
+# variables
 username = 0
 password = 0
+username2 = 0
+password2 = 0
+password3 = 0
+counter = 2
+rows = []
+Spending_categories = ["Housing", "Transportation", "Food", "Utilities", "Insurance", "Medical & Healthcare",
+                       "Saving, Investing, & Debt Payments", "Personal Spending", "Recreation & Entertainment",
+                       "Miscellaneous"]
+clicked = StringVar()
+clicked.set("Housing")
 
-message_label = Label(login_page, text="Login page", wraplength=500)
-message_label.pack()
+# Frames
+login = ttk.Frame(main)
+login.grid(row=0, column=0)
+signup = ttk.Frame(main)
+signup.grid(row=0, column=0)
+signup.grid_forget()
+main_menu = ttk.Frame(main)
+main_menu.grid(row=0, column=0)
+main_menu.grid_forget()
+input_page = ttk.Frame(main)
+input_page.grid(row=0, column=0)
+input_page.grid_forget()
+budget = ttk.Frame(main)
+budget.grid(row=0, column=0)
+budget.grid_forget()
+tips = ttk.Frame(main)
+tips.grid(row=0, column=0)
+tips.grid_forget()
 
 
-def login():
-    def check():
-        Username = usernames.get()
-        Password = passwords.get()
-        error_message = tk.Label(Login, text="", fg="red")
-        error_message.grid(row=3, column=1)
-        if Password != password:
-            error_message.config(text="INCORRECT PASSWORD")
-        elif Username != username:
-            error_message.config(text="INCORRECT USERNAME")
+# Go to main menu
+def go_main_menu(frame):
+    frame.grid_forget()
+    main_menu.grid(row=0, column=0)
+
+
+def go_login(frame):
+    frame.grid_forget()
+    login.grid(row=0, column=0)
+
+
+def login_func():
+    global username, password
+    username_test = username_login_entry.get()
+    password_test = password_login_entry.get()
+    if username_test == "Simonsenh":
+        username = "Simonsenh"
+    if password_test == "123":
+        password = "123"
+    if username == "Simonsenh" and password == "123":
+        login.grid_forget()
+        main_menu.grid(row=0, column=0)
+
+
+def signup_func():
+    global username_signup_entry, password_signup_entry, password_signup_entry_check
+    login.grid_forget()
+    signup.grid(row=0, column=0)
+
+
+def signup_button_func():
+    global username2, password2, password3
+    username2 = username_signup_entry.get()
+    password2 = password_signup_entry.get()
+    password3 = password_signup_entry_check.get()
+
+
+def input_page_func():
+    main_menu.grid_forget()
+    input_page.grid(row=0, column=0)
+
+
+def budget_func():
+    main_menu.grid_forget()
+    budget.grid(row=0, column=0)
+
+
+def tips_func():
+    main_menu.grid_forget()
+    tips.grid(row=0, column=0)
+
+
+def add_row():
+    global counter
+    counter += 1
+    items = []
+    var = IntVar()
+    check = Checkbutton(input_page, variable=var)
+    check.val = var
+    items.append(check)
+    check.grid(row=counter, column=0)
+    c = 0
+    while c != 4:
+        if c == 0:
+            b = OptionMenu(input_page, clicked, *Spending_categories)
         else:
-            error_message.config(
-                text="                                                                                ")
-            Login.destroy()
-            login_page.destroy()
-            main_menu = tk.Tk()
-            main_menu.title("MAIN MENU")
-
-            def get_data():
-                def destroy():
-                    Login.destroy()
-
-                def ok():
-                    saving_try = savings.get()
-                    month_income_try = month_incomes.get()
-                    month_expense_try = month_expenses.get()
-                    time_try = times.get()
-                    loan_try = loans.get()
-                    loan_due_try = loan_dues.get()
-                    try:
-                        float(saving_try + month_income_try + month_expense_try + time_try + loan_try + loan_due_try)
-                    except Exception:
-                        wrong_message = tk.Label(data, text="INPUT NUMBER!", fg="red")
-                        wrong_message.grid(row=6, column=1)
-                    else:
-                        global saving
-                        saving = saving_try
-                        global month_income
-                        month_income = month_income_try
-                        global month_expense
-                        month_expense = month_expense_try
-                        global time
-                        time = time_try
-                        global loan
-                        loan = loan_try
-                        global loan_due
-                        loan_due = loan_due_try
-                        global gross_month
-                        gross_month = float(month_income) - float(month_expense)
-                        global money_after_loan
-                        money_after_loan = (float(saving) - float(loan)) + (float(gross_month) * float(loan_due))
-                        global final_money
-                        final_money = float(time) * float(gross_month) - float(loan) + float(saving)
-                        print(saving, month_income, month_expense, time, loan, loan_due)
-                        data.destroy()
-
-                data = tk.Tk()
-                data.title("Input your financial information")
-                tk.Label(data, text="savings").grid(row=0)
-                tk.Label(data, text="month_income").grid(row=1)
-                tk.Label(data, text="month_expenses").grid(row=2)
-                tk.Label(data, text="time").grid(row=3)
-                tk.Label(data, text="loan").grid(row=4)
-                tk.Label(data, text="loan_due").grid(row=5)
-                savings = tk.Entry(data)
-                month_incomes = tk.Entry(data)
-                month_expenses = tk.Entry(data)
-                times = tk.Entry(data)
-                loans = tk.Entry(data)
-                loan_dues = tk.Entry(data)
-                savings.grid(row=0, column=1)
-                month_incomes.grid(row=1, column=1)
-                month_expenses.grid(row=2, column=1)
-                times.grid(row=3, column=1)
-                loans.grid(row=4, column=1)
-                loan_dues.grid(row=5, column=1)
-                e = Button(data, text="ok", command=ok)
-                e.grid(row=6, column=2)
-                f = Button(data, text="cancel", command=destroy)
-                f.grid(row=6, column=3)
-
-            def stat():
-                stats = tk.Tk()
-                message_1 = tk.Label(stats, text="You are making {}$ a month".format(gross_month))
-                message_1.grid(row=1, column=1)
-                message_2 = tk.Label(stats, text="After you pay off your loan you will have {}$".format(money_after_loan))
-                message_2.grid(row=2, column=1)
-
-            def graph():
-                print("graph")
-
-            def tips():
-                print("tips")
-
-            get_data = Button(main_menu, text="Input data", command=get_data, width=10)
-            get_data.pack()
-            stat = Button(main_menu, text="Show stats", command=stat, width=10)
-            stat.pack()
-            graph = Button(main_menu, text="Show graphs", command=graph, width=10)
-            graph.pack()
-            tips = Button(main_menu, text="Show tips", command=tips, width=10)
-            tips.pack()
-
-    def delete():
-        Login.destroy()
-
-    Login = tk.Tk()
-    Login.title("login")
-    tk.Label(Login, text="Username").grid(row=0)
-    tk.Label(Login, text="Password").grid(row=1)
-    usernames = tk.Entry(Login)
-    passwords = tk.Entry(Login)
-    usernames.grid(row=0, column=1)
-    passwords.grid(row=1, column=1)
-    c = Button(Login, text="ok", command=check)
-    c.grid(row=4, column=2)
-    d = Button(Login, text="cancel", command=delete)
-    d.grid(row=4, column=3)
+            b = Entry(input_page)
+        items.append(b)
+        b.grid(row=counter, column=(c + 1))
+        c += 1
+    rows.append(items)
 
 
-login_page.geometry("200x100")
-a = Button(login_page, text="login", command=login, width=6)
-a.pack()
+def delete_row():
+    for row_s, row in reversed(list(enumerate(rows))):
+        if row[0].val.get() == 1:
+            for i in row:
+                i.destroy()
+            rows.pop(row_s)
 
 
-def signup():
-    def user_info():
-        Username = usernames.get()
-        Password = passwords.get()
-        Confirm_Password = confirm_passwords.get()
-        error_message = tk.Label(signup_page, text="", fg="red")
-        error_message.grid(row=3, column=1)
-        if len(Username) > 20:
-            error_message.config(text="USERNAME NEEDS TO BE LESS THAN TWENTY CHARACTERS!")
-        elif len(Username) < 8:
-            error_message.config(text="USERNAME NEEDS TO BE MORE THAN EIGHT CHARACTERS! ")
-        elif len(Password) < 8:
-            error_message.config(text="PASSWORD NEEDS TO BE MORE THAN EIGHT CHARACTERS! ")
-        elif len(Password) > 20:
-            error_message.config(text="PASSWORD NEEDS TO BE LESS THAN TWENTY CHARACTERS!")
-        elif Password != Confirm_Password:
-            error_message.config(text="YOUR PASSWORD'S DONT MATCH!                                             ")
-        else:
-            error_message.config(
-                text="                                                                                                           ")
-            global username
-            username = Username
-            global password
-            password = Password
-            signup_page.destroy()
+# login page
+Login_title = ttk.Label(login, text="TITLE")
+Login_title.grid(row=0, column=3)
 
-    def delete():
-        signup_page.destroy()
+username_label = ttk.Label(login, text="USERNAME")
+username_label.grid(row=0, column=0)
 
-    signup_page = tk.Tk()
-    signup_page.title("sign up page")
-    tk.Label(signup_page, text="Username").grid(row=0)
-    tk.Label(signup_page, text="Password").grid(row=1)
-    tk.Label(signup_page, text="Confirm Password").grid(row=2)
-    usernames = tk.Entry(signup_page)
-    passwords = tk.Entry(signup_page)
-    confirm_passwords = tk.Entry(signup_page)
-    usernames.grid(row=0, column=1)
-    passwords.grid(row=1, column=1)
-    confirm_passwords.grid(row=2, column=1)
-    c = Button(signup_page, text="ok", command=user_info)
-    c.grid(row=4, column=2)
-    d = Button(signup_page, text="cancel", command=delete)
-    d.grid(row=4, column=3)
+password_label = ttk.Label(login, text="PASSWORD")
+password_label.grid(row=1, column=0)
 
+username_login_entry = ttk.Entry(login)
+username_login_entry.grid(row=0, column=1)
 
-login_page.geometry("200x100")
-b = Button(login_page, text="Sign up", command=signup, width=6)
-b.pack()
+password_login_entry = ttk.Entry(login)
+password_login_entry.grid(row=1, column=1)
 
-login_page.mainloop()
-print(username, password)
+login_button = ttk.Button(login, text="login", width=10, command=lambda: login_func())
+login_button.grid(row=2, column=0)
+
+signup_button = ttk.Button(login, text="sign up", width=10, command=lambda: signup_func())
+signup_button.grid(row=2, column=1)
+
+# signup page
+signup_title = ttk.Label(signup, text="TITLE")
+signup_title.grid(row=0, column=3)
+
+username_label_signup = ttk.Label(signup, text="USERNAME")
+username_label_signup.grid(row=0, column=0)
+
+password_label_signup = ttk.Label(signup, text="PASSWORD")
+password_label_signup.grid(row=1, column=0)
+
+password_label_signup_check = ttk.Label(signup, text="PASSWORD AGAIN")
+password_label_signup_check.grid(row=2, column=0)
+
+username_signup_entry = ttk.Entry(signup)
+username_signup_entry.grid(row=0, column=1)
+
+password_signup_entry = ttk.Entry(signup)
+password_signup_entry.grid(row=1, column=1)
+
+password_signup_entry_check = ttk.Entry(signup)
+password_signup_entry_check.grid(row=2, column=1)
+
+signup_page_button = ttk.Button(signup, text="sign up", width=10, command=lambda: signup_button_func())
+signup_page_button.grid(row=3, column=0)
+
+cancel_button = ttk.Button(signup, text="cancel", width=10, command=lambda: go_login(signup))
+cancel_button.grid(row=3, column=1)
+
+# Main menu
+main_menu_title = ttk.Label(main_menu, text="TITLE")
+main_menu_title.grid(row=0, column=0)
+
+input_page_button = ttk.Button(main_menu, text="input page", width=10, command=lambda: input_page_func())
+input_page_button.grid(row=1, column=0)
+
+budget_button = ttk.Button(main_menu, text="budget", width=10, command=lambda: budget_func())
+budget_button.grid(row=1, column=1)
+
+tips_button = ttk.Button(main_menu, text="tips", width=10, command=lambda: tips_func())
+tips_button.grid(row=1, column=2)
+
+# input page
+cancel_button_input = ttk.Button(input_page, text="cancel", width=10, command=lambda: go_main_menu(input_page))
+cancel_button_input.grid(row=0, column=0)
+
+add_row_button = ttk.Button(input_page, text='Add Row', command=add_row)
+add_row_button.grid(row=0, column=0)
+
+delete_row_button = ttk.Button(input_page, text='Delete Row', command=delete_row)
+delete_row_button.grid(row=0, column=1)
+
+v0 = StringVar()
+e0 = Entry(input_page, textvariable=v0, state='readonly')
+v0.set('Select')
+e0.grid(row=1, column=0)
+
+v1 = StringVar()
+e1 = Entry(input_page, textvariable=v1, state='readonly')
+v1.set('Spending category')
+e1.grid(row=1, column=1)
+
+v2 = StringVar()
+e2 = Entry(input_page, textvariable=v2, state='readonly')
+v2.set('Spending type')
+e2.grid(row=1, column=2)
+
+v3 = StringVar()
+e3 = Entry(input_page, textvariable=v3, state='readonly')
+v3.set('Amount')
+e3.grid(row=1, column=3)
+
+v4 = StringVar()
+e4 = Entry(input_page, textvariable=v4, state='readonly')
+v4.set('Time per payment')
+e4.grid(row=1, column=4)
+
+# budget
+cancel_button_budget = ttk.Button(budget, text="cancel", width=10, command=lambda: go_main_menu(budget))
+cancel_button_budget.grid(row=0, column=0)
+
+# tips
+cancel_button_tips = ttk.Button(tips, text="cancel", width=10, command=lambda: go_main_menu(tips))
+cancel_button_tips.grid(row=0, column=0)
+
+main.mainloop()
