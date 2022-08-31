@@ -191,14 +191,10 @@ def edit_row():
         else:
             selected.append(0)
     num_rows = round(num_rows)
-    print(num_rows)
-    print(selected)
-    print(len(selected))
     while counter_3 < len(selected):
         if selected[counter_3] == 1:
             selected_row = counter_3 + 1
         counter_3 += 1
-    print(selected_row)
     if num_rows > 1:
         error_message_input.config(text="CAN ONLY EDIT ONE ROW AT A TIME!                                 ")
     elif num_rows == 0:
@@ -208,9 +204,21 @@ def edit_row():
         input_page.grid_forget()
         edit_input.grid(row=0, column=0)
 
-def edit_func():
-    print("yes")
 
+def edit_func():
+    global clicked
+    types = entry_edit_1.get()
+    amount = entry_edit_1.get()
+    time = entry_edit_1.get()
+    values_load = pickle.load(open("values.dat", "rb"))
+    values_load[0].append(clicked)
+    values_load[1].append(types)
+    values_load[2].append(amount)
+    values_load[3].append(time)
+    print(values_load)
+    pickle.dump(values_load, open("values.dat", "wb"))
+    edit_input.grid_forget()
+    input_page.grid(row=0, column=0)
 
 
 # login page
@@ -349,7 +357,7 @@ entry_3_edit = Entry(edit_input, textvariable=var_3_edit, state='readonly')
 var_3_edit.set('Amount')
 entry_3_edit.grid(row=1, column=2)
 
-var_4_edit= StringVar()
+var_4_edit = StringVar()
 entry_4_edit = Entry(edit_input, textvariable=var_4_edit, state='readonly')
 var_4_edit.set('Time per payment')
 entry_4_edit.grid(row=1, column=3)
@@ -379,8 +387,9 @@ main.mainloop()
 # load file
 yes_no = input("do you want to load file?")
 if yes_no == "yes":
-    show = pickle.load(open("names.dat", "rb"))
-    print(show)
+    show1 = pickle.load(open("names.dat", "rb"))
+    show2 = pickle.load(open("values.dat", "rb"))
+    print(show1, show2)
 else:
     print("ok")
 
