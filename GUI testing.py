@@ -14,6 +14,7 @@ username2 = 0
 password2 = 0
 password3 = 0
 counter = 2
+selected_row = 0
 rows = []
 Spending_categories = ["Housing", "Transportation", "Food", "Utilities", "Insurance", "Medical & Healthcare",
                        "Saving, Investing, & Debt Payments", "Personal Spending", "Recreation & Entertainment",
@@ -118,15 +119,15 @@ def signup_button_func():
     password = password_signup_entry.get()
     password2 = password_signup_entry_check.get()
     if password != password2:
-        error_message.config(text="PASSWORDS NEED TO MATCH!                                                                    ")
+        error_message_signup.config(text="PASSWORDS NEED TO MATCH!                                                                    ")
     elif len(username) > 20:
-        error_message.config(text="USERNAME NEEDS TO BE LESS THAN TWENTY CHARACTERS!")
+        error_message_signup.config(text="USERNAME NEEDS TO BE LESS THAN TWENTY CHARACTERS!")
     elif len(username) < 8:
-        error_message.config(text="USERNAME NEEDS TO BE MORE THAN EIGHT CHARACTERS! ")
+        error_message_signup.config(text="USERNAME NEEDS TO BE MORE THAN EIGHT CHARACTERS! ")
     elif len(password) < 8:
-        error_message.config(text="PASSWORD NEEDS TO BE MORE THAN EIGHT CHARACTERS! ")
+        error_message_signup.config(text="PASSWORD NEEDS TO BE MORE THAN EIGHT CHARACTERS! ")
     elif len(password) > 20:
-        error_message.config(text="PASSWORD NEEDS TO BE LESS THAN TWENTY CHARACTERS!")
+        error_message_signup.config(text="PASSWORD NEEDS TO BE LESS THAN TWENTY CHARACTERS!")
     else:
         username_passwords = pickle.load(open("names.dat", "rb"))
         username_passwords[0].append(username)
@@ -178,9 +179,10 @@ def delete_row():
 
 
 def edit_row():
-    global num_rows, selected
+    global num_rows, selected_row
     num_rows = 0
     selected = []
+    counter_3 = 0
     for row_s, row in reversed(list(enumerate(rows))):
         if row[0].val.get() == 1:
             selected.append(1)
@@ -191,6 +193,24 @@ def edit_row():
     num_rows = round(num_rows)
     print(num_rows)
     print(selected)
+    print(len(selected))
+    while counter_3 < len(selected):
+        if selected[counter_3] == 1:
+            selected_row = counter_3 + 1
+        counter_3 += 1
+    print(selected_row)
+    if num_rows > 1:
+        error_message_input.config(text="CAN ONLY EDIT ONE ROW AT A TIME!                                 ")
+    elif num_rows == 0:
+        error_message_input.config(text="MUST SELECTED A ROW BEFORE YOU CAN EDIT!")
+    else:
+        error_message_input.config(text="                                                                                                       ")
+        input_page.grid_forget()
+        edit_input.grid(row=0, column=0)
+
+def edit_func():
+    print("yes")
+
 
 
 # login page
@@ -246,8 +266,8 @@ signup_page_button.grid(row=4, column=0)
 cancel_button = ttk.Button(signup, text="cancel", width=10, command=lambda: go_login(signup))
 cancel_button.grid(row=4, column=1)
 
-error_message = ttk.Label(signup, text="", foreground="red")
-error_message.grid(row=3, column=0)
+error_message_signup = ttk.Label(signup, text="", foreground="red")
+error_message_signup.grid(row=3, column=0)
 
 # Main menu
 main_menu_title = ttk.Label(main_menu, text="TITLE")
@@ -275,6 +295,9 @@ edit_row_button.grid(row=0, column=2)
 cancel_button_input = ttk.Button(input_page, text="cancel", width=10, command=lambda: go_main_menu(input_page))
 cancel_button_input.grid(row=0, column=3)
 
+error_message_input = ttk.Label(input_page, text="", foreground="red")
+error_message_input.grid(row=0, column=5)
+
 var_0 = StringVar()
 entry_0 = Entry(input_page, textvariable=var_0, state='readonly')
 var_0.set('Select')
@@ -299,6 +322,49 @@ var_4 = StringVar()
 entry_4 = Entry(input_page, textvariable=var_4, state='readonly')
 var_4.set('Time per payment')
 entry_4.grid(row=1, column=4)
+
+# edit input
+
+username_label_signup = ttk.Label(edit_input, text="Edit row {}".format(selected_row + 1))
+username_label_signup.grid(row=0, column=0)
+
+cancel_button_edit = ttk.Button(edit_input, text="cancel", width=10, command=lambda: go_input_page(edit_input))
+cancel_button_edit.grid(row=0, column=1)
+
+done_button_edit = ttk.Button(edit_input, text="done", width=10, command=lambda: edit_func())
+done_button_edit.grid(row=0, column=2)
+
+var_1_edit = StringVar()
+entry_1_edit = Entry(edit_input, textvariable=var_1_edit, state='readonly')
+var_1_edit.set('Spending category')
+entry_1_edit.grid(row=1, column=0)
+
+var_2_edit = StringVar()
+entry_2_edit = Entry(edit_input, textvariable=var_2_edit, state='readonly')
+var_2_edit.set('Spending type')
+entry_2_edit.grid(row=1, column=1)
+
+var_3_edit = StringVar()
+entry_3_edit = Entry(edit_input, textvariable=var_3_edit, state='readonly')
+var_3_edit.set('Amount')
+entry_3_edit.grid(row=1, column=2)
+
+var_4_edit= StringVar()
+entry_4_edit = Entry(edit_input, textvariable=var_4_edit, state='readonly')
+var_4_edit.set('Time per payment')
+entry_4_edit.grid(row=1, column=3)
+
+option_edit = OptionMenu(edit_input, clicked, *Spending_categories)
+option_edit.grid(row=2, column=0)
+
+entry_edit_1 = ttk.Entry(edit_input)
+entry_edit_1.grid(row=2, column=1)
+
+entry_edit_2 = ttk.Entry(edit_input)
+entry_edit_2.grid(row=2, column=2)
+
+entry_edit_3 = ttk.Entry(edit_input)
+entry_edit_3.grid(row=2, column=3)
 
 # budget
 cancel_button_budget = ttk.Button(budget, text="cancel", width=10, command=lambda: go_main_menu(budget))
