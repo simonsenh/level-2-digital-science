@@ -15,12 +15,31 @@ password2 = 0
 password3 = 0
 counter = 2
 selected_row = 0
+username_test = 0
 rows = []
 Spending_categories = ["Housing", "Transportation", "Food", "Utilities", "Insurance", "Medical & Healthcare",
                        "Saving, Investing, & Debt Payments", "Personal Spending", "Recreation & Entertainment",
                        "Miscellaneous"]
 clicked = StringVar()
 clicked.set("Housing")
+
+# manually clear pickle
+vari_1 = [["usernames"], ["passwords"]]
+vari_2 = [["user"], ["row"], ["category"], ["type"], ["amount"], ["time"]]
+# pickle.dump(vari_1, open("names.dat", "wb"))
+pickle.dump(vari_2, open("values.dat", "wb"))
+
+# set pickle titles
+try:
+    vari_1 = pickle.load(open("names.dat", "rb"))
+except:
+    vari_1 = [["usernames"], ["passwords"]]
+    pickle.dump(vari_1, open("names.dat", "wb"))
+try:
+    vari_2 = pickle.load(open("values.dat", "rb"))
+except:
+    vari_2 = [["user"], ["row"], ["category"], ["type"], ["amount"], ["time"]]
+    pickle.dump(vari_2, open("values.dat", "wb"))
 
 # Frames
 login = ttk.Frame(main)
@@ -62,6 +81,7 @@ def go_input_page(frame):
 
 
 def login_func():
+    global current_username
     username_test = username_login_entry.get()
     password_test = password_login_entry.get()
     username_passwords = pickle.load(open("names.dat", "rb"))
@@ -103,6 +123,7 @@ def login_func():
     else:
         error_message_login.config(text="WRONG PASSWORD!")
     if valid == 3:
+        current_username = username_test
         login.grid_forget()
         main_menu.grid(row=0, column=0)
 
@@ -206,16 +227,17 @@ def edit_row():
 
 
 def edit_func():
-    global clicked
+    category = clicked.get()
     types = entry_edit_1.get()
-    amount = entry_edit_1.get()
-    time = entry_edit_1.get()
+    amount = entry_edit_2.get()
+    times = entry_edit_3.get()
     values_load = pickle.load(open("values.dat", "rb"))
-    values_load[0].append(clicked)
-    values_load[1].append(types)
-    values_load[2].append(amount)
-    values_load[3].append(time)
-    print(values_load)
+    values_load[0].append(current_username)
+    values_load[1].append(selected_row)
+    values_load[2].append(category)
+    values_load[3].append(types)
+    values_load[4].append(amount)
+    values_load[5].append(times)
     pickle.dump(values_load, open("values.dat", "wb"))
     edit_input.grid_forget()
     input_page.grid(row=0, column=0)
