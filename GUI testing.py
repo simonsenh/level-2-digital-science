@@ -27,7 +27,7 @@ clicked.set("Housing")
 vari_1 = [["usernames"], ["passwords"]]
 vari_2 = []
 vari_3 = [["row"], ["category"], ["type"], ["amount"], ["time"]]
-choose = 0
+# choose = 0
 choose = input("Do you want to reset files?")
 if choose == "yes":
     pickle.dump(vari_1, open("names.dat", "wb"))
@@ -100,24 +100,25 @@ def go_input_page(frame):
     counter_3 = 1
     length = len(values_go[which_user][1])
     lists = values_go[which_user][1]
-    while loop == 0:
-        v = lists[counter_3]
-        if v > highest_row:
-            highest_row = v
-        counter_3 += 1
-        if counter_3 >= length:
-            loop = 1
-    counter_3 = 0
-    while counter_3 < highest_row:
-        add_row()
-        counter_3 += 1
+    if length > 1:
+        while loop == 0:
+            v = lists[counter_3]
+            if v > highest_row:
+                highest_row = v
+            counter_3 += 1
+            if counter_3 >= length:
+                loop = 1
+        counter_3 = 0
+        while counter_3 < highest_row:
+            add_row()
+            counter_3 += 1
     frame.grid_forget()
     input_page.grid(row=0, column=0)
 
 
 def login_func():
     global current_username
-    username_test = username_login_entry.get()
+    username_tests = username_login_entry.get()
     password_test = password_login_entry.get()
     username_passwords = pickle.load(open("names.dat", "rb"))
     counter_3 = 0
@@ -127,7 +128,7 @@ def login_func():
     check_pass = 0
     while found == 0:
         try:
-            if username_test == username_passwords[0][counter_3]:
+            if username_tests == username_passwords[0][counter_3]:
                 check_user = counter_3
                 found = 1
             else:
@@ -158,7 +159,7 @@ def login_func():
     else:
         error_message_login.config(text="WRONG PASSWORD!")
     if valid == 3:
-        current_username = username_test
+        current_username = username_tests
         login.grid_forget()
         main_menu.grid(row=0, column=0)
 
@@ -243,6 +244,7 @@ def delete_row():
             selected.insert(0, 0)
     loop = 0
     counter_3 = 0
+    which_user = 0
     while loop == 0:
         if delete_variables[counter_3][0] == current_username:
             which_user = counter_3
@@ -254,14 +256,38 @@ def delete_row():
     while loop == 0:
         try:
             if selected[counter_3] == 1:
-                selected_pop.append(counter + 1)
+                selected_pop.append(counter_3 + 1)
+            counter_3 += 1
         except:
             loop = 1
     print(selected_pop)
-    counter_3 = 0
-    while counter_3 > len(delete_variables[which_user][1]):
-        delete_variables[which_user][1].pop(selected_pop[counter_3])
-        counter += 1
+    counter_3 = 1
+    position = 0
+    a = len(delete_variables[which_user][1])
+    print(a)
+    print(counter_3)
+    while counter_3 < a:
+        b = delete_variables[which_user][1][counter_3]
+        c = len(selected_pop)
+        counter_4 = 0
+        while counter_4 < c:
+            d = selected_pop[counter_4]
+            if b == d:
+                position = counter_3
+            counter_4 += 1
+        if position != 0:
+            delete_variables[which_user][1].pop(position)
+            delete_variables[which_user][2].pop(position)
+            delete_variables[which_user][3].pop(position)
+            delete_variables[which_user][4].pop(position)
+            delete_variables[which_user][5].pop(position)
+        e = len(delete_variables[which_user][1])
+        if e == a:
+            counter_3 += 1
+        else:
+            a = len(delete_variables[which_user][1])
+
+    pickle.dump(delete_variables, open("values.dat", "wb"))
 
 
 def edit_row():
@@ -272,7 +298,7 @@ def edit_row():
     for row_s, row in reversed(list(enumerate(rows))):
         if row[0].val.get() == 1:
             selected.insert(0, 1)
-            for integer in row:
+            for _ in row:
                 num_rows += 0.2
         else:
             selected.insert(0, 0)
@@ -314,8 +340,7 @@ def edit_func():
     values_load[which_user][4].append(amount)
     values_load[which_user][5].append(times)
     pickle.dump(values_load, open("values.dat", "wb"))
-    edit_input.grid_forget()
-    input_page.grid(row=0, column=0)
+    go_input_page(edit_input)
 
 
 def set_text():
