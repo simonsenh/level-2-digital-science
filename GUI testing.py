@@ -2,7 +2,6 @@ from tkinter import *
 from tkinter import ttk
 import pickle
 
-# setting up the main window
 main = Tk()
 main.title("Henry Simonsen Budgeting Software")
 main.geometry('700x500')
@@ -16,6 +15,7 @@ password3 = 0
 counter = 2
 selected_row = 0
 username_test = 0
+counter_2 = 0
 rows = []
 Spending_categories = ["Housing", "Transportation", "Food", "Utilities", "Insurance", "Medical & Healthcare",
                        "Saving, Investing, & Debt Payments", "Personal Spending", "Recreation & Entertainment",
@@ -25,21 +25,23 @@ clicked.set("Housing")
 
 # manually clear pickle
 vari_1 = [["usernames"], ["passwords"]]
-vari_2 = [["user"], ["row"], ["category"], ["type"], ["amount"], ["time"]]
-# pickle.dump(vari_1, open("names.dat", "wb"))
-pickle.dump(vari_2, open("values.dat", "wb"))
+vari_2 = []
+vari_3 = [["row"], ["category"], ["type"], ["amount"], ["time"]]
+choose = 0
+choose = input("Do you want to reset files?")
+if choose == "yes":
+    pickle.dump(vari_1, open("names.dat", "wb"))
+    pickle.dump(vari_2, open("values.dat", "wb"))
 
 # set pickle titles
 try:
-    vari_1 = pickle.load(open("names.dat", "rb"))
+    vari_4 = pickle.load(open("names.dat", "rb"))
 except:
-    vari_1 = [["usernames"], ["passwords"]]
-    pickle.dump(vari_1, open("names.dat", "wb"))
+    print("error with names")
 try:
-    vari_2 = pickle.load(open("values.dat", "rb"))
+    vari_5 = pickle.load(open("values.dat", "rb"))
 except:
-    vari_2 = [["user"], ["row"], ["category"], ["type"], ["amount"], ["time"]]
-    pickle.dump(vari_2, open("values.dat", "wb"))
+    print("error with values")
 
 # Frames
 login = ttk.Frame(main)
@@ -76,6 +78,39 @@ def go_login(frame):
 
 
 def go_input_page(frame):
+    global counter
+    for row_s, row in reversed(list(enumerate(rows))):
+        if row[0].val.get() == 1 or row[0].val.get() == 0:
+            for integer in row:
+                integer.destroy()
+            rows.pop(row_s)
+            counter -= 1
+    values_go = pickle.load(open("values.dat", "rb"))
+    highest_row = 0
+    which_user = 0
+    counter_3 = 0
+    loop = 0
+    while loop == 0:
+        if values_go[counter_3][0] == current_username:
+            which_user = counter_3
+            loop = 1
+        else:
+            counter_3 += 1
+    loop = 0
+    counter_3 = 1
+    length = len(values_go[which_user][1])
+    lists = values_go[which_user][1]
+    while loop == 0:
+        v = lists[counter_3]
+        if v > highest_row:
+            highest_row = v
+        counter_3 += 1
+        if counter_3 >= length:
+            loop = 1
+    counter_3 = 0
+    while counter_3 < highest_row:
+        add_row()
+        counter_3 += 1
     frame.grid_forget()
     input_page.grid(row=0, column=0)
 
@@ -85,33 +120,33 @@ def login_func():
     username_test = username_login_entry.get()
     password_test = password_login_entry.get()
     username_passwords = pickle.load(open("names.dat", "rb"))
-    counter_2 = 0
+    counter_3 = 0
     found = 0
     valid = 0
     check_user = 0
     check_pass = 0
     while found == 0:
         try:
-            if username_test == username_passwords[0][counter_2]:
-                check_user = counter_2
+            if username_test == username_passwords[0][counter_3]:
+                check_user = counter_3
                 found = 1
             else:
-                counter_2 += 1
+                counter_3 += 1
         except:
             found = 2
     if found != 1:
         error_message_login.config(text="WRONG USERNAME!")
     else:
         valid += 1
-    counter_2 = 0
+    counter_3 = 0
     found = 0
     while found == 0:
         try:
-            if password_test == username_passwords[1][counter_2]:
-                check_pass = counter_2
+            if password_test == username_passwords[1][counter_3]:
+                check_pass = counter_3
                 found = 1
             else:
-                counter_2 += 1
+                counter_3 += 1
         except:
             found = 2
     if found != 1:
@@ -140,7 +175,8 @@ def signup_button_func():
     password = password_signup_entry.get()
     password2 = password_signup_entry_check.get()
     if password != password2:
-        error_message_signup.config(text="PASSWORDS NEED TO MATCH!                                                                    ")
+        error_message_signup.config(
+            text="PASSWORDS NEED TO MATCH!                                                                    ")
     elif len(username) > 20:
         error_message_signup.config(text="USERNAME NEEDS TO BE LESS THAN TWENTY CHARACTERS!")
     elif len(username) < 8:
@@ -154,13 +190,12 @@ def signup_button_func():
         username_passwords[0].append(username)
         username_passwords[1].append(password)
         pickle.dump(username_passwords, open("names.dat", "wb"))
+        add_username = pickle.load(open("values.dat", "rb"))
+        vari_3.insert(0, username)
+        add_username.append(vari_3)
+        pickle.dump(add_username, open("values.dat", "wb"))
         signup.grid_forget()
         login.grid(row=0, column=0)
-
-
-def input_page_func():
-    main_menu.grid_forget()
-    input_page.grid(row=0, column=0)
 
 
 def budget_func():
@@ -174,7 +209,7 @@ def tips_func():
 
 
 def add_row():
-    global counter
+    global counter, counter_2
     counter += 1
     items = []
     var = IntVar()
@@ -185,6 +220,7 @@ def add_row():
     counter_2 = 0
     while counter_2 != 4:
         entry = Entry(input_page)
+        entry.insert(END, set_text())
         items.append(entry)
         entry.grid(row=counter, column=(counter_2 + 1))
         counter_2 += 1
@@ -192,11 +228,16 @@ def add_row():
 
 
 def delete_row():
+    global counter
     for row_s, row in reversed(list(enumerate(rows))):
         if row[0].val.get() == 1:
             for integer in row:
                 integer.destroy()
             rows.pop(row_s)
+            counter -= 1
+            loop = 0
+            while loop == 0:
+                loop = 1
 
 
 def edit_row():
@@ -206,41 +247,79 @@ def edit_row():
     counter_3 = 0
     for row_s, row in reversed(list(enumerate(rows))):
         if row[0].val.get() == 1:
-            selected.append(1)
+            selected.insert(0, 1)
             for integer in row:
                 num_rows += 0.2
         else:
-            selected.append(0)
+            selected.insert(0, 0)
     num_rows = round(num_rows)
     while counter_3 < len(selected):
         if selected[counter_3] == 1:
             selected_row = counter_3 + 1
         counter_3 += 1
+    print(selected_row)
     if num_rows > 1:
         error_message_input.config(text="CAN ONLY EDIT ONE ROW AT A TIME!                                 ")
     elif num_rows == 0:
         error_message_input.config(text="MUST SELECTED A ROW BEFORE YOU CAN EDIT!")
     else:
-        error_message_input.config(text="                                                                                                       ")
+        error_message_input.config(
+            text="                                                                                                       ")
         input_page.grid_forget()
         edit_input.grid(row=0, column=0)
 
 
 def edit_func():
+    values_load = pickle.load(open("values.dat", "rb"))
     category = clicked.get()
     types = entry_edit_1.get()
     amount = entry_edit_2.get()
     times = entry_edit_3.get()
-    values_load = pickle.load(open("values.dat", "rb"))
-    values_load[0].append(current_username)
-    values_load[1].append(selected_row)
-    values_load[2].append(category)
-    values_load[3].append(types)
-    values_load[4].append(amount)
-    values_load[5].append(times)
+    which_user = 0
+    counter_3 = 0
+    loop = 0
+    while loop == 0:
+        if values_load[counter_3][0] == current_username:
+            which_user = counter_3
+            loop = 1
+        else:
+            counter_3 += 1
+    values_load[which_user][1].append(selected_row)
+    values_load[which_user][2].append(category)
+    values_load[which_user][3].append(types)
+    values_load[which_user][4].append(amount)
+    values_load[which_user][5].append(times)
     pickle.dump(values_load, open("values.dat", "wb"))
     edit_input.grid_forget()
     input_page.grid(row=0, column=0)
+
+
+def set_text():
+    global counter
+    values_text = pickle.load(open("values.dat", "rb"))
+    which_user = 0
+    counter_3 = 0
+    loop = 0
+    texts = 0
+    while loop == 0:
+        if values_text[counter_3][0] == current_username:
+            which_user = counter_3
+            loop = 1
+        else:
+            counter_3 += 1
+    loop = 0
+    counter_3 = 1
+    while loop == 0:
+        try:
+            if values_text[which_user][1][counter_3] == counter - 2:
+                texts = values_text[which_user][counter_2 + 2][counter_3]
+                loop = 1
+            else:
+                counter_3 += 1
+        except:
+            texts = []
+            loop = 1
+    return texts
 
 
 # login page
@@ -303,7 +382,7 @@ error_message_signup.grid(row=3, column=0)
 main_menu_title = ttk.Label(main_menu, text="TITLE")
 main_menu_title.grid(row=0, column=0)
 
-input_page_button = ttk.Button(main_menu, text="input page", width=10, command=lambda: input_page_func())
+input_page_button = ttk.Button(main_menu, text="input page", width=10, command=lambda: go_input_page(main_menu))
 input_page_button.grid(row=1, column=0)
 
 budget_button = ttk.Button(main_menu, text="budget", width=10, command=lambda: budget_func())
