@@ -229,15 +229,39 @@ def add_row():
 
 def delete_row():
     global counter
+    selected = []
+    selected_pop = []
+    delete_variables = pickle.load(open("values.dat", "rb"))
     for row_s, row in reversed(list(enumerate(rows))):
         if row[0].val.get() == 1:
+            selected.insert(0, 1)
             for integer in row:
                 integer.destroy()
             rows.pop(row_s)
             counter -= 1
-            loop = 0
-            while loop == 0:
-                loop = 1
+        else:
+            selected.insert(0, 0)
+    loop = 0
+    counter_3 = 0
+    while loop == 0:
+        if delete_variables[counter_3][0] == current_username:
+            which_user = counter_3
+            loop = 1
+        else:
+            counter_3 += 1
+    loop = 0
+    counter_3 = 0
+    while loop == 0:
+        try:
+            if selected[counter_3] == 1:
+                selected_pop.append(counter + 1)
+        except:
+            loop = 1
+    print(selected_pop)
+    counter_3 = 0
+    while counter_3 > len(delete_variables[which_user][1]):
+        delete_variables[which_user][1].pop(selected_pop[counter_3])
+        counter += 1
 
 
 def edit_row():
