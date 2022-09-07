@@ -87,15 +87,7 @@ def go_input_page(frame):
             counter -= 1
     values_go = pickle.load(open("values.dat", "rb"))
     highest_row = 0
-    which_user = 0
-    counter_3 = 0
-    loop = 0
-    while loop == 0:
-        if values_go[counter_3][0] == current_username:
-            which_user = counter_3
-            loop = 1
-        else:
-            counter_3 += 1
+    which_user = which_user_func()
     loop = 0
     counter_3 = 1
     length = len(values_go[which_user][1])
@@ -242,15 +234,7 @@ def delete_row():
             counter -= 1
         else:
             selected.insert(0, 0)
-    loop = 0
-    counter_3 = 0
-    which_user = 0
-    while loop == 0:
-        if delete_variables[counter_3][0] == current_username:
-            which_user = counter_3
-            loop = 1
-        else:
-            counter_3 += 1
+    which_user = which_user_func()
     loop = 0
     counter_3 = 0
     while loop == 0:
@@ -260,12 +244,9 @@ def delete_row():
             counter_3 += 1
         except:
             loop = 1
-    print(selected_pop)
     counter_3 = 1
     position = 0
     a = len(delete_variables[which_user][1])
-    print(a)
-    print(counter_3)
     while counter_3 < a:
         b = delete_variables[which_user][1][counter_3]
         c = len(selected_pop)
@@ -286,7 +267,6 @@ def delete_row():
             counter_3 += 1
         else:
             a = len(delete_variables[which_user][1])
-
     pickle.dump(delete_variables, open("values.dat", "wb"))
 
 
@@ -307,7 +287,6 @@ def edit_row():
         if selected[counter_3] == 1:
             selected_row = counter_3 + 1
         counter_3 += 1
-    print(selected_row)
     if num_rows > 1:
         error_message_input.config(text="CAN ONLY EDIT ONE ROW AT A TIME!                                 ")
     elif num_rows == 0:
@@ -325,38 +304,40 @@ def edit_func():
     types = entry_edit_1.get()
     amount = entry_edit_2.get()
     times = entry_edit_3.get()
-    which_user = 0
-    counter_3 = 0
-    loop = 0
-    while loop == 0:
-        if values_load[counter_3][0] == current_username:
-            which_user = counter_3
-            loop = 1
-        else:
-            counter_3 += 1
-    values_load[which_user][1].append(selected_row)
-    values_load[which_user][2].append(category)
-    values_load[which_user][3].append(types)
-    values_load[which_user][4].append(amount)
-    values_load[which_user][5].append(times)
-    pickle.dump(values_load, open("values.dat", "wb"))
-    go_input_page(edit_input)
+    which_user = which_user_func()
+    test = 0
+    try:
+        amount = float(amount)
+    except:
+        amount = "s"
+    try:
+        times = float(times)
+    except:
+        times = "s"
+    if amount == "s":
+        error_message_edit.config(text="AMOUNT MUST BE A NUMBER!")
+    else:
+        test += 1
+    if times == "s":
+        error_message_edit.config(text="TIME MUST BE A NUMBER!")
+    else:
+        test += 1
+    if test == 2:
+        values_load[which_user][1].append(selected_row)
+        values_load[which_user][2].append(category)
+        values_load[which_user][3].append(types)
+        values_load[which_user][4].append(amount)
+        values_load[which_user][5].append(times)
+        pickle.dump(values_load, open("values.dat", "wb"))
+        go_input_page(edit_input)
 
 
 def set_text():
     global counter
     values_text = pickle.load(open("values.dat", "rb"))
-    which_user = 0
-    counter_3 = 0
+    which_user = which_user_func()
     loop = 0
     texts = 0
-    while loop == 0:
-        if values_text[counter_3][0] == current_username:
-            which_user = counter_3
-            loop = 1
-        else:
-            counter_3 += 1
-    loop = 0
     counter_3 = 1
     while loop == 0:
         try:
@@ -370,6 +351,31 @@ def set_text():
             loop = 1
     return texts
 
+
+def calculate_budget():
+    calculate = pickle.load(open("values.dat", "rb"))
+    which_user = which_user_func()
+    total_amount = 0
+    counter_3 = 1
+    while len(calculate[which_user][4]) > counter_3:
+        amount_per_day = calculate[which_user][4][counter_3] / calculate[which_user][5][counter_3]
+        total_amount += amount_per_day
+        print(total_amount)
+        counter_3 += 1
+
+
+def which_user_func():
+    which_user_load = pickle.load(open("values.dat", "rb"))
+    loop = 0
+    counter_3 = 0
+    which_user = 0
+    while loop == 0:
+        if which_user_load[counter_3][0] == current_username:
+            which_user = counter_3
+            loop = 1
+        else:
+            counter_3 += 1
+    return which_user
 
 # login page
 Login_title = ttk.Label(login, text="TITLE")
@@ -492,6 +498,9 @@ cancel_button_edit.grid(row=0, column=1)
 done_button_edit = ttk.Button(edit_input, text="done", width=10, command=lambda: edit_func())
 done_button_edit.grid(row=0, column=2)
 
+error_message_edit = ttk.Label(edit_input, text="", foreground="red")
+error_message_edit.grid(row=3, column=0)
+
 var_1_edit = StringVar()
 entry_1_edit = Entry(edit_input, textvariable=var_1_edit, state='readonly')
 var_1_edit.set('Spending category')
@@ -527,6 +536,9 @@ entry_edit_3.grid(row=2, column=3)
 # budget
 cancel_button_budget = ttk.Button(budget, text="cancel", width=10, command=lambda: go_main_menu(budget))
 cancel_button_budget.grid(row=0, column=0)
+
+calculate_budget_button = ttk.Button(budget, text="calculate budget", width=10, command=lambda: calculate_budget())
+calculate_budget_button.grid(row=0, column=1)
 
 # tips
 cancel_button_tips = ttk.Button(tips, text="cancel", width=10, command=lambda: go_main_menu(tips))
