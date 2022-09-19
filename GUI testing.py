@@ -116,6 +116,7 @@ def login_func():
     counter_3 = 0
     found = 0
     valid = 0
+    valid_2 = 0
     check_user = 0
     check_pass = 0
     while found == 0:
@@ -127,10 +128,10 @@ def login_func():
                 counter_3 += 1
         except:
             found = 2
-    if found != 1:
-        error_message_login.config(text="WRONG USERNAME!")
-    else:
+    if found == 1:
         valid += 1
+    else:
+        valid_2 = 1
     counter_3 = 0
     found = 0
     while found == 0:
@@ -142,15 +143,20 @@ def login_func():
                 counter_3 += 1
         except:
             found = 2
-    if found != 1:
-        error_message_login.config(text="WRONG PASSWORD!")
-    else:
-        valid += 1
-    if check_pass == check_user:
+    if found == 1:
         valid += 1
     else:
+        valid_2 = 2
+    if valid == 2:
+        if check_pass == check_user:
+            valid += 1
+        else:
+            valid_2 = 2
+    if valid_2 == 1:
+        error_message_login.config(text="WRONG USERNAME!")
+    elif valid_2 == 2:
         error_message_login.config(text="WRONG PASSWORD!")
-    if valid == 3:
+    elif valid == 3:
         current_username = username_tests
         login.grid_forget()
         main_menu.grid(row=0, column=0)
@@ -164,31 +170,57 @@ def signup_func():
 
 def signup_button_func():
     global username, password, password2
+    username_passwords = pickle.load(open("names.dat", "rb"))
     username = username_signup_entry.get()
     password = password_signup_entry.get()
     password2 = password_signup_entry_check.get()
-    if password != password2:
-        error_message_signup.config(
-            text="PASSWORDS NEED TO MATCH!                                                                    ")
-    elif len(username) > 20:
-        error_message_signup.config(text="USERNAME NEEDS TO BE LESS THAN TWENTY CHARACTERS!")
-    elif len(username) < 8:
-        error_message_signup.config(text="USERNAME NEEDS TO BE MORE THAN EIGHT CHARACTERS! ")
-    elif len(password) < 8:
-        error_message_signup.config(text="PASSWORD NEEDS TO BE MORE THAN EIGHT CHARACTERS! ")
-    elif len(password) > 20:
-        error_message_signup.config(text="PASSWORD NEEDS TO BE LESS THAN TWENTY CHARACTERS!")
+    loop = 0
+    counter_3 = 1
+    valid = 0
+    while loop == 0:
+        try:
+            if username_passwords[0][counter_3] == username:
+                loop = 1
+            else:
+                counter_3 += 1
+        except:
+            valid += 1
+            loop = 1
+    loop = 0
+    counter_3 = 1
+    while loop == 0:
+        try:
+            if username_passwords[1][counter_3] == password:
+                loop = 1
+            else:
+                counter_3 += 1
+        except:
+            valid += 1
+            loop = 1
+    if valid == 2:
+        if password != password2:
+            error_message_signup.config(
+                text="PASSWORDS NEED TO MATCH!                                                                    ")
+        elif len(username) > 20:
+            error_message_signup.config(text="USERNAME NEEDS TO BE LESS THAN TWENTY CHARACTERS!")
+        elif len(username) < 8:
+            error_message_signup.config(text="USERNAME NEEDS TO BE MORE THAN EIGHT CHARACTERS! ")
+        elif len(password) < 8:
+            error_message_signup.config(text="PASSWORD NEEDS TO BE MORE THAN EIGHT CHARACTERS! ")
+        elif len(password) > 20:
+            error_message_signup.config(text="PASSWORD NEEDS TO BE LESS THAN TWENTY CHARACTERS!")
+        else:
+            username_passwords[0].append(username)
+            username_passwords[1].append(password)
+            pickle.dump(username_passwords, open("names.dat", "wb"))
+            add_username = pickle.load(open("values.dat", "rb"))
+            vari_3.insert(0, username)
+            add_username.append(vari_3)
+            pickle.dump(add_username, open("values.dat", "wb"))
+            signup.grid_forget()
+            login.grid(row=0, column=0)
     else:
-        username_passwords = pickle.load(open("names.dat", "rb"))
-        username_passwords[0].append(username)
-        username_passwords[1].append(password)
-        pickle.dump(username_passwords, open("names.dat", "wb"))
-        add_username = pickle.load(open("values.dat", "rb"))
-        vari_3.insert(0, username)
-        add_username.append(vari_3)
-        pickle.dump(add_username, open("values.dat", "wb"))
-        signup.grid_forget()
-        login.grid(row=0, column=0)
+        error_message_signup.config(text="PASSWORD OR USERNAME HAS BEEN TAKEN!")
 
 
 def budget_func():
@@ -357,11 +389,28 @@ def calculate_budget():
     which_user = which_user_func()
     total_amount = 0
     counter_3 = 1
+    expenses_list = []
+    spending_ratios = [['needs', 0.5], ['wants', 0.3], ['savings', 0.2]]
+    needs_amount = 0
+    wants_amount = 0
+    savings_amount = 0
     while len(calculate[which_user][4]) > counter_3:
         amount_per_day = calculate[which_user][4][counter_3] / calculate[which_user][5][counter_3]
+        amount_per_day = round(amount_per_day, ndigits=2)
+        temp_list = [calculate[which_user][2][counter_3], amount_per_day]
+        expenses_list.append(temp_list)
         total_amount += amount_per_day
-        print(total_amount)
         counter_3 += 1
+    counter_3 = 0
+    while counter_3 < len(expenses_list):
+        if expenses_list[counter_3][0] == "Saving, Investing, & Debt Payments":
+            savings_amount += expenses_list[counter_3][1]
+        elif expenses_list[counter_3][0] == "Personal Spending" or expenses_list[counter_3][0] == "Recreation & Entertainment" or expenses_list[counter_3][0] == "Miscellaneous":
+            wants_amount += expenses_list[counter_3][1]
+        else:
+            needs_amount += expenses_list[counter_3][1]
+        counter_3 += 1
+    print(needs_amount, wants_amount, savings_amount)
 
 
 def which_user_func():
@@ -376,6 +425,7 @@ def which_user_func():
         else:
             counter_3 += 1
     return which_user
+
 
 # login page
 Login_title = ttk.Label(login, text="TITLE")
@@ -537,7 +587,7 @@ entry_edit_3.grid(row=2, column=3)
 cancel_button_budget = ttk.Button(budget, text="cancel", width=10, command=lambda: go_main_menu(budget))
 cancel_button_budget.grid(row=0, column=0)
 
-calculate_budget_button = ttk.Button(budget, text="calculate budget", width=10, command=lambda: calculate_budget())
+calculate_budget_button = ttk.Button(budget, text="calculate budget", width=20, command=lambda: calculate_budget())
 calculate_budget_button.grid(row=0, column=1)
 
 # tips
