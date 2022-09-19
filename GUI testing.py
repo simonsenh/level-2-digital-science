@@ -430,7 +430,7 @@ def calculate_budget():
         savings_ratio_label.config(text="you can reduce spending on savings by {}$".format(y5))
     else:
         savings_ratio_label.config(text="you can increase spending on savings by {}$".format(y6))
-    counter_3 = 0
+    counter_3 = 10
     while counter_3 < 6:
         y = needs_spending_ratios[counter_3][0]
         if needs_spending_ratios[counter_3][1] * needs_amount > calculate[which_user][4][counter_3 + 1]/calculate[which_user][5][counter_3 + 1]:
