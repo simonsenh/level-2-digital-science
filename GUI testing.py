@@ -390,11 +390,9 @@ def calculate_budget():
     total_amount = 0
     counter_3 = 1
     expenses_list = []
-    spending_ratios = [['needs', 0.5], ['wants', 0.3], ['savings', 0.2]]
-    needs_spending_ratios = [["Housing", 0.2], ["Transportation", 0.1], ["Food", 0.2], ["Utilities", 0.2], ["Insurance", 0.1], ["Medical & Healthcare", 0.2]]
-    needs_amount = 0
-    wants_amount = 0
-    savings_amount = 0
+    spending_ratios = [["Housing", 0.1], ["Transportation", 0.1], ["Food", 0.1], ["Utilities", 0.1], ["Insurance", 0.1],
+                       ["Medical & Healthcare", 0.1], ["Saving, Investing, & Debt Payments", 0.1],
+                       ["Personal Spending", 0.1], ["Recreation & Entertainment", 0.1], ["Miscellaneous", 0.1]]
     while len(calculate[which_user][4]) > counter_3:
         amount_per_day = calculate[which_user][4][counter_3] / calculate[which_user][5][counter_3]
         amount_per_day = round(amount_per_day, ndigits=2)
@@ -402,43 +400,7 @@ def calculate_budget():
         expenses_list.append(temp_list)
         total_amount += amount_per_day
         counter_3 += 1
-    counter_3 = 0
-    while counter_3 < len(expenses_list):
-        if expenses_list[counter_3][0] == "Saving, Investing, & Debt Payments":
-            savings_amount += expenses_list[counter_3][1]
-        elif expenses_list[counter_3][0] == "Personal Spending" or expenses_list[counter_3][0] == "Recreation & Entertainment" or expenses_list[counter_3][0] == "Miscellaneous":
-            wants_amount += expenses_list[counter_3][1]
-        else:
-            needs_amount += expenses_list[counter_3][1]
-        counter_3 += 1
-    print(needs_amount, wants_amount, savings_amount)
-    y1 = round(needs_amount - spending_ratios[0][1] * total_amount, ndigits=2)
-    y2 = round(spending_ratios[0][1] * total_amount - needs_amount, ndigits=2)
-    y3 = round(wants_amount - spending_ratios[1][1] * total_amount, ndigits=2)
-    y4 = round(spending_ratios[1][1] * total_amount - wants_amount, ndigits=2)
-    y5 = round(savings_amount - spending_ratios[2][1] * total_amount, ndigits=2)
-    y6 = round(spending_ratios[2][1] * total_amount - savings_amount, ndigits=2)
-    if spending_ratios[0][1] * total_amount < needs_amount:
-        needs_ratio_label.config(text="you can reduce spending on needs by {}$".format(y1))
-    else:
-        needs_ratio_label.config(text="you can increase spending on needs by {}$".format(y2))
-    if spending_ratios[1][1] * total_amount < wants_amount:
-        wants_ratio_label.config(text="you can reduce spending on wants by {}$".format(y3))
-    else:
-        wants_ratio_label.config(text="you can increase spending on wants by {}$".format(y4))
-    if spending_ratios[2][1] * total_amount < savings_amount:
-        savings_ratio_label.config(text="you can reduce spending on savings by {}$".format(y5))
-    else:
-        savings_ratio_label.config(text="you can increase spending on savings by {}$".format(y6))
-    counter_3 = 10
-    while counter_3 < 6:
-        y = needs_spending_ratios[counter_3][0]
-        if needs_spending_ratios[counter_3][1] * needs_amount > calculate[which_user][4][counter_3 + 1]/calculate[which_user][5][counter_3 + 1]:
-            housing_label.config(text="you can increase spending on {} by {}$".format(needs_spending_ratios[counter_3][0], needs_spending_ratios[counter_3][1] * needs_amount - calculate[which_user][4][counter_3 + 1]/calculate[which_user][5][counter_3 + 1]))
-        else:
-            housing_label.config(text="you can decrease spending on {} by {}$".format(needs_spending_ratios[counter_3][0], calculate[which_user][4][counter_3 + 1]/calculate[which_user][5][counter_3 + 1] - needs_spending_ratios[counter_3][1] * needs_amount))
-        counter_3 += 1
-
+    print(expenses_list)
 
 
 def which_user_func():
@@ -618,32 +580,44 @@ cancel_button_budget.grid(row=0, column=0)
 calculate_budget_button = ttk.Button(budget, text="calculate budget", width=20, command=lambda: calculate_budget())
 calculate_budget_button.grid(row=0, column=1)
 
-needs_ratio_label = ttk.Label(budget)
-needs_ratio_label.grid(row=1, column=0)
+needs_label = ttk.Label(budget, text="NEEDS")
+needs_label.grid(row=1, column=0)
 
-wants_ratio_label = ttk.Label(budget)
-wants_ratio_label.grid(row=2, column=0)
+wants_label = ttk.Label(budget, text="WANTS")
+wants_label.grid(row=8, column=0)
 
-savings_ratio_label = ttk.Label(budget)
-savings_ratio_label.grid(row=3, column=0)
+savings_label = ttk.Label(budget, text="SAVINGS")
+savings_label.grid(row=12, column=0)
 
-housing_label = ttk.Label(budget)
-housing_label.grid(row=4, column=0)
+housing_label = ttk.Label(budget, text="CALCULATE")
+housing_label.grid(row=2, column=0)
 
-transport_label = ttk.Label(budget)
-transport_label.grid(row=5, column=0)
+transport_label = ttk.Label(budget, text="CALCULATE")
+transport_label.grid(row=3, column=0)
 
-food_label = ttk.Label(budget)
-food_label.grid(row=6, column=0)
+food_label = ttk.Label(budget, text="CALCULATE")
+food_label.grid(row=4, column=0)
 
-utilitys_label = ttk.Label(budget)
-utilitys_label.grid(row=7, column=0)
+utilitys_label = ttk.Label(budget, text="CALCULATE")
+utilitys_label.grid(row=5, column=0)
 
-insurance_label = ttk.Label(budget)
-insurance_label.grid(row=8, column=0)
+insurance_label = ttk.Label(budget, text="CALCULATE")
+insurance_label.grid(row=6, column=0)
 
-medical_label = ttk.Label(budget)
-medical_label.grid(row=9, column=0)
+medical_label = ttk.Label(budget, text="CALCULATE")
+medical_label.grid(row=7, column=0)
+
+personal_spending_label = ttk.Label(budget, text="CALCULATE")
+personal_spending_label.grid(row=9, column=0)
+
+recreation_label = ttk.Label(budget, text="CALCULATE")
+recreation_label.grid(row=10, column=0)
+
+miscellaneous_label = ttk.Label(budget, text="CALCULATE")
+miscellaneous_label.grid(row=11, column=0)
+
+savings_debt_label = ttk.Label(budget, text="CALCULATE")
+savings_debt_label.grid(row=13, column=0)
 
 # tips
 cancel_button_tips = ttk.Button(tips, text="cancel", width=10, command=lambda: go_main_menu(tips))
