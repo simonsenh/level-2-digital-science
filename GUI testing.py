@@ -339,6 +339,7 @@ def edit_func():
     types = entry_edit_1.get()
     amount = entry_edit_2.get()
     times = entry_edit_3.get()
+    time_category = click.get()
     which_user = which_user_func()
     test = 0
     try:
@@ -347,6 +348,18 @@ def edit_func():
         amount = "s"
     try:
         times = float(times)
+        if time_category == "Weeks":
+            times = times * 7
+            times = round(times)
+        elif time_category == "Months":
+            times = (times * 365) / 12
+            times = round(times)
+        elif time_category == "Years":
+            times = times * 365
+            times = round(times)
+        else:
+            times = times
+        print(times)
     except:
         times = "s"
     if amount == "s":
@@ -527,7 +540,7 @@ entry_3.grid(row=1, column=3)
 
 var_4 = StringVar()
 entry_4 = Entry(input_page, textvariable=var_4, state='readonly')
-var_4.set('Time per payment')
+var_4.set('Days per payment')
 entry_4.grid(row=1, column=4)
 
 # edit input
