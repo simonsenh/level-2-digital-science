@@ -22,6 +22,9 @@ Spending_categories = ["Housing", "Transportation", "Food", "Utilities", "Insura
                        "Miscellaneous"]
 clicked = StringVar()
 clicked.set("Housing")
+time_types = ["Days", "Weeks", "Months", "Years"]
+click = StringVar()
+click.set("Days")
 
 # manually clear pickle
 vari_1 = [["usernames"], ["passwords"]]
@@ -558,8 +561,13 @@ entry_3_edit.grid(row=1, column=2)
 
 var_4_edit = StringVar()
 entry_4_edit = Entry(edit_input, textvariable=var_4_edit, state='readonly')
-var_4_edit.set('Time per payment')
+var_4_edit.set('Time category')
 entry_4_edit.grid(row=1, column=3)
+
+var_5_edit = StringVar()
+entry_5_edit = Entry(edit_input, textvariable=var_5_edit, state='readonly')
+var_5_edit.set('Time quantity')
+entry_5_edit.grid(row=1, column=4)
 
 option_edit = OptionMenu(edit_input, clicked, *Spending_categories)
 option_edit.grid(row=2, column=0)
@@ -570,8 +578,11 @@ entry_edit_1.grid(row=2, column=1)
 entry_edit_2 = ttk.Entry(edit_input)
 entry_edit_2.grid(row=2, column=2)
 
+option_edit_2 = OptionMenu(edit_input, click, *time_types)
+option_edit_2.grid(row=2, column=3)
+
 entry_edit_3 = ttk.Entry(edit_input)
-entry_edit_3.grid(row=2, column=3)
+entry_edit_3.grid(row=2, column=4)
 
 # budget
 cancel_button_budget = ttk.Button(budget, text="cancel", width=10, command=lambda: go_main_menu(budget))
@@ -589,7 +600,7 @@ wants_label.grid(row=8, column=0)
 savings_label = ttk.Label(budget, text="SAVINGS")
 savings_label.grid(row=12, column=0)
 
-housing_label = ttk.Label(budget, text="CALCULATE")
+housing_label = ttk.Label(budget, text="HOUSING: CALCULATE")
 housing_label.grid(row=2, column=0)
 
 transport_label = ttk.Label(budget, text="CALCULATE")
