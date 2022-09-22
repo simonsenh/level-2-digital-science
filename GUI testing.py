@@ -17,40 +17,21 @@ selected_row = 0
 username_test = 0
 counter_2 = 0
 rows = []
-tip_row = 0
 Spending_categories = ["Housing", "Transportation", "Food", "Utilities", "Insurance", "Medical & Healthcare",
                        "Saving, Investing, & Debt Payments", "Personal Spending", "Recreation & Entertainment",
-                       "Miscellaneous", "Income"]
+                       "Miscellaneous"]
 clicked = StringVar()
 clicked.set("Housing")
-time_types = ["Days", "Weeks", "Months", "Years"]
-click = StringVar()
-click.set("Days")
 
 # manually clear pickle
 vari_1 = [["usernames"], ["passwords"]]
 vari_2 = []
 vari_3 = [["row"], ["category"], ["type"], ["amount"], ["time"]]
-vari_6 = [["Housing", 0.196], ["Transportation", 0.17], ["Food", 0.074], ["Utilities", 0.137], ["Insurance", 0.026],
-          ["Medical & Healthcare", 0.026], ["Saving, Investing, & Debt Payments", 0.225],
-          ["Personal Spending", 0.045], ["Recreation & Entertainment", 0.51], ["Miscellaneous", 0.05]]
-vari_7 = [["Under spend housing", "Over spend housing"],
-          ["Under spend transport", "Over spend transport"],
-          ["Under spend food", "Over spend food"],
-          ["Under spend utilitys", "Over spend utilitys"],
-          ["Under spend insurance", "Over spend insurance"],
-          ["Under spend Medical & Healthcare", "Over spend Medical & Healthcare"],
-          ["Under spend Personal Spending", "Over spend Personal Spending"],
-          ["Under spend Recreation & Entertainment", "Over spend Recreation & Entertainment"],
-          ["Under spend Miscellaneous", "Over spend Miscellaneous"],
-          ["Under spend Saving, Investing, & Debt Payments", "Over spend Saving, Investing, & Debt Payments"]]
 # choose = 0
 choose = input("Do you want to reset files?")
 if choose == "yes":
     pickle.dump(vari_1, open("names.dat", "wb"))
     pickle.dump(vari_2, open("values.dat", "wb"))
-    pickle.dump(vari_6, open("ratio.dat", "wb"))
-    pickle.dump(vari_7, open("tips.dat", "wb"))
 
 # set pickle titles
 try:
@@ -243,29 +224,17 @@ def signup_button_func():
 
 
 def budget_func():
-    tips.grid_forget()
+    main_menu.grid_forget()
     budget.grid(row=0, column=0)
 
 
 def tips_func():
-    budget.grid_forget()
     main_menu.grid_forget()
     tips.grid(row=0, column=0)
-    tips_load = pickle.load(open("tips.dat", "rb"))
-    counter_3 = 0
-    while counter_3 < 10:
-        if tip_row == counter_3 + 1:
-            if 0 < row_2_list[counter_3] - total_spending_categorys[counter_3][1]:
-                tips_page_label.config(text=tips_load[counter_3][1])
-            elif row_2_list[counter_3] - total_spending_categorys[counter_3][1] == 0:
-                tips_page_label.config(text="This account is perfect")
-            else:
-                tips_page_label.config(text=tips_load[counter_3][0])
-        counter_3 += 1
 
 
 def add_row():
-    global counter, counter_2, selected_row_2
+    global counter, counter_2
     counter += 1
     items = []
     var = IntVar()
@@ -362,38 +331,35 @@ def edit_row():
 
 
 def edit_func():
-    global times
     values_load = pickle.load(open("values.dat", "rb"))
     category = clicked.get()
     types = entry_edit_1.get()
     amount = entry_edit_2.get()
-    time_category = click.get()
+    times = entry_edit_3.get()
     which_user = which_user_func()
+    test = 0
     try:
         amount = float(amount)
     except:
         amount = "s"
+    try:
+        times = float(times)
+    except:
+        times = "s"
     if amount == "s":
         error_message_edit.config(text="AMOUNT MUST BE A NUMBER!")
     else:
-        counter_3 = 1
-        insert = 0
-        while counter_3 < len(values_load[which_user][1]):
-            if selected_row == values_load[which_user][1][counter_3]:
-                insert = counter_3
-            counter_3 += 1
-        if insert == 0:
-            values_load[which_user][1].append(selected_row)
-            values_load[which_user][2].append(category)
-            values_load[which_user][3].append(types)
-            values_load[which_user][4].append(amount)
-            values_load[which_user][5].append(time_category)
-        else:
-            values_load[which_user][1][insert] = selected_row
-            values_load[which_user][2][insert] = category
-            values_load[which_user][3][insert] = types
-            values_load[which_user][4][insert] = amount
-            values_load[which_user][5][insert] = time_category
+        test += 1
+    if times == "s":
+        error_message_edit.config(text="TIME MUST BE A NUMBER!")
+    else:
+        test += 1
+    if test == 2:
+        values_load[which_user][1].append(selected_row)
+        values_load[which_user][2].append(category)
+        values_load[which_user][3].append(types)
+        values_load[which_user][4].append(amount)
+        values_load[which_user][5].append(times)
         pickle.dump(values_load, open("values.dat", "wb"))
         go_input_page(edit_input)
 
@@ -419,154 +385,60 @@ def set_text():
 
 
 def calculate_budget():
-    global row_2_list, total_spending_categorys
     calculate = pickle.load(open("values.dat", "rb"))
-    spending_ratios = pickle.load(open("ratio.dat", "rb"))
     which_user = which_user_func()
     total_amount = 0
-    total_amount_2 = 0
-    total_amount_3 = 0
-    row_2_list = []
-    total_spending_categorys = []
-    counter_3 = 0
-    while len(spending_ratios) != counter_3:
-        total_spending_categorys.append([spending_ratios[counter_3][0], 0])
-        counter_3 += 1
-    total_spending_categorys.append(["Income", 0])
     counter_3 = 1
+    expenses_list = []
+    spending_ratios = [['needs', 0.5], ['wants', 0.3], ['savings', 0.2]]
+    needs_spending_ratios = [["Housing", 0.2], ["Transportation", 0.1], ["Food", 0.2], ["Utilities", 0.2], ["Insurance", 0.1], ["Medical & Healthcare", 0.2]]
+    needs_amount = 0
+    wants_amount = 0
+    savings_amount = 0
     while len(calculate[which_user][4]) > counter_3:
-        if calculate[which_user][5][counter_3] == "Days":
-            amount_per_month = 356 / 12
-        elif calculate[which_user][5][counter_3] == "Weeks":
-            amount_per_month = 52 / 12
-        elif calculate[which_user][5][counter_3] == "Years":
-            amount_per_month = 1 / 12
+        amount_per_day = calculate[which_user][4][counter_3] / calculate[which_user][5][counter_3]
+        amount_per_day = round(amount_per_day, ndigits=2)
+        temp_list = [calculate[which_user][2][counter_3], amount_per_day]
+        expenses_list.append(temp_list)
+        total_amount += amount_per_day
+        counter_3 += 1
+    counter_3 = 0
+    while counter_3 < len(expenses_list):
+        if expenses_list[counter_3][0] == "Saving, Investing, & Debt Payments":
+            savings_amount += expenses_list[counter_3][1]
+        elif expenses_list[counter_3][0] == "Personal Spending" or expenses_list[counter_3][0] == "Recreation & Entertainment" or expenses_list[counter_3][0] == "Miscellaneous":
+            wants_amount += expenses_list[counter_3][1]
         else:
-            amount_per_month = 1
-        amount_per_month = calculate[which_user][4][counter_3] * amount_per_month
-        amount_per_month = round(amount_per_month, ndigits=2)
-        counter_4 = 0
-        while counter_4 < 11:
-            if calculate[which_user][2][counter_3] == total_spending_categorys[counter_4][0]:
-                y = total_spending_categorys[counter_4][1]
-                y += amount_per_month
-                total_spending_categorys[counter_4][1] = y
-            counter_4 += 1
-        total_amount += amount_per_month
-        total_amount = round(total_amount, ndigits=2)
+            needs_amount += expenses_list[counter_3][1]
         counter_3 += 1
-    # row one
-    income_monthly_label.insert(END, total_spending_categorys[10][1])
-    housing_label.insert(END, total_spending_categorys[0][1])
-    transport_label.insert(END, total_spending_categorys[1][1])
-    food_label.insert(END, total_spending_categorys[2][1])
-    utilitys_label.insert(END, total_spending_categorys[3][1])
-    insurance_label.insert(END, total_spending_categorys[4][1])
-    medical_label.insert(END, total_spending_categorys[5][1])
-    savings_debt_label.insert(END, total_spending_categorys[6][1])
-    personal_spending_label.insert(END, total_spending_categorys[7][1])
-    recreation_label.insert(END, total_spending_categorys[8][1])
-    miscellaneous_label.insert(END, total_spending_categorys[9][1])
-    total_budget_label.insert(END, total_amount)
-    # row two
-    counter_3 = 0
-    while counter_3 < 10:
-        total_amount_2 += total_spending_categorys[10][1] * spending_ratios[counter_3][1]
-        y = -(total_spending_categorys[10][1] * spending_ratios[counter_3][1])
-        y = round(y, ndigits=2)
-        row_2_list.append(y)
+    print(needs_amount, wants_amount, savings_amount)
+    y1 = round(needs_amount - spending_ratios[0][1] * total_amount, ndigits=2)
+    y2 = round(spending_ratios[0][1] * total_amount - needs_amount, ndigits=2)
+    y3 = round(wants_amount - spending_ratios[1][1] * total_amount, ndigits=2)
+    y4 = round(spending_ratios[1][1] * total_amount - wants_amount, ndigits=2)
+    y5 = round(savings_amount - spending_ratios[2][1] * total_amount, ndigits=2)
+    y6 = round(spending_ratios[2][1] * total_amount - savings_amount, ndigits=2)
+    if spending_ratios[0][1] * total_amount < needs_amount:
+        needs_ratio_label.config(text="you can reduce spending on needs by {}$".format(y1))
+    else:
+        needs_ratio_label.config(text="you can increase spending on needs by {}$".format(y2))
+    if spending_ratios[1][1] * total_amount < wants_amount:
+        wants_ratio_label.config(text="you can reduce spending on wants by {}$".format(y3))
+    else:
+        wants_ratio_label.config(text="you can increase spending on wants by {}$".format(y4))
+    if spending_ratios[2][1] * total_amount < savings_amount:
+        savings_ratio_label.config(text="you can reduce spending on savings by {}$".format(y5))
+    else:
+        savings_ratio_label.config(text="you can increase spending on savings by {}$".format(y6))
+    counter_3 = 10
+    while counter_3 < 6:
+        y = needs_spending_ratios[counter_3][0]
+        if needs_spending_ratios[counter_3][1] * needs_amount > calculate[which_user][4][counter_3 + 1]/calculate[which_user][5][counter_3 + 1]:
+            housing_label.config(text="you can increase spending on {} by {}$".format(needs_spending_ratios[counter_3][0], needs_spending_ratios[counter_3][1] * needs_amount - calculate[which_user][4][counter_3 + 1]/calculate[which_user][5][counter_3 + 1]))
+        else:
+            housing_label.config(text="you can decrease spending on {} by {}$".format(needs_spending_ratios[counter_3][0], calculate[which_user][4][counter_3 + 1]/calculate[which_user][5][counter_3 + 1] - needs_spending_ratios[counter_3][1] * needs_amount))
         counter_3 += 1
-    total_amount_2 = round(total_amount_2, ndigits=2)
-    income_monthly_label_2.insert(END, total_spending_categorys[10][1])
-    housing_label_2.insert(END, row_2_list[0])
-    transport_label_2.insert(END, row_2_list[1])
-    food_label_2.insert(END, row_2_list[2])
-    utilitys_label_2.insert(END, row_2_list[3])
-    insurance_label_2.insert(END, row_2_list[4])
-    medical_label_2.insert(END, row_2_list[5])
-    savings_debt_label_2.insert(END, row_2_list[6])
-    personal_spending_label_2.insert(END, row_2_list[7])
-    recreation_label_2.insert(END, row_2_list[8])
-    miscellaneous_label_2.insert(END, row_2_list[9])
-    total_budget_label_2.insert(END, total_amount_2)
-    # row three
-    counter_3 = 0
-    while counter_3 < 10:
-        total_amount_3 += (row_2_list[counter_3] - total_spending_categorys[counter_3][1])
-        counter_3 += 1
-    total_amount_3 = round(total_amount_3, ndigits=2)
-    income_monthly_label_3.insert(END, total_spending_categorys[10][1])
-    housing_label_3.insert(END, row_2_list[0] - total_spending_categorys[0][1])
-    transport_label_3.insert(END, row_2_list[1] - total_spending_categorys[1][1])
-    food_label_3.insert(END, row_2_list[2] - total_spending_categorys[2][1])
-    utilitys_label_3.insert(END, row_2_list[3] - total_spending_categorys[3][1])
-    insurance_label_3.insert(END, row_2_list[4] - total_spending_categorys[4][1])
-    medical_label_3.insert(END, row_2_list[5] - total_spending_categorys[5][1])
-    savings_debt_label_3.insert(END, row_2_list[6] - total_spending_categorys[6][1])
-    personal_spending_label_3.insert(END, row_2_list[7] - total_spending_categorys[7][1])
-    recreation_label_3.insert(END, row_2_list[8] - total_spending_categorys[8][1])
-    miscellaneous_label_3.insert(END, row_2_list[9] - total_spending_categorys[9][1])
-    total_budget_label_3.insert(END, total_amount_3)
 
-
-def tip_row_func_1():
-    global tip_row
-    tip_row = 1
-    tips_func()
-
-
-def tip_row_func_2():
-    global tip_row
-    tip_row = 2
-    tips_func()
-
-
-def tip_row_func_3():
-    global tip_row
-    tip_row = 3
-    tips_func()
-
-
-def tip_row_func_4():
-    global tip_row
-    tip_row = 4
-    tips_func()
-
-
-def tip_row_func_5():
-    global tip_row
-    tip_row = 5
-    tips_func()
-
-
-def tip_row_func_6():
-    global tip_row
-    tip_row = 6
-    tips_func()
-
-
-def tip_row_func_7():
-    global tip_row
-    tip_row = 7
-    tips_func()
-
-
-def tip_row_func_8():
-    global tip_row
-    tip_row = 8
-    tips_func()
-
-
-def tip_row_func_9():
-    global tip_row
-    tip_row = 9
-    tips_func()
-
-
-def tip_row_func_10():
-    global tip_row
-    tip_row = 10
-    tips_func()
 
 
 def which_user_func():
@@ -649,6 +521,9 @@ input_page_button.grid(row=1, column=0)
 budget_button = ttk.Button(main_menu, text="budget", width=10, command=lambda: budget_func())
 budget_button.grid(row=1, column=1)
 
+tips_button = ttk.Button(main_menu, text="tips", width=10, command=lambda: tips_func())
+tips_button.grid(row=1, column=2)
+
 # input page
 add_row_button = ttk.Button(input_page, text='Add Row', command=add_row)
 add_row_button.grid(row=0, column=0)
@@ -687,7 +562,7 @@ entry_3.grid(row=1, column=3)
 
 var_4 = StringVar()
 entry_4 = Entry(input_page, textvariable=var_4, state='readonly')
-var_4.set('Time type')
+var_4.set('Time per payment')
 entry_4.grid(row=1, column=4)
 
 # edit input
@@ -721,7 +596,7 @@ entry_3_edit.grid(row=1, column=2)
 
 var_4_edit = StringVar()
 entry_4_edit = Entry(edit_input, textvariable=var_4_edit, state='readonly')
-var_4_edit.set('Time category')
+var_4_edit.set('Time per payment')
 entry_4_edit.grid(row=1, column=3)
 
 option_edit = OptionMenu(edit_input, clicked, *Spending_categories)
@@ -733,240 +608,46 @@ entry_edit_1.grid(row=2, column=1)
 entry_edit_2 = ttk.Entry(edit_input)
 entry_edit_2.grid(row=2, column=2)
 
-option_edit_2 = OptionMenu(edit_input, click, *time_types)
-option_edit_2.grid(row=2, column=3)
+entry_edit_3 = ttk.Entry(edit_input)
+entry_edit_3.grid(row=2, column=3)
 
 # budget
-var_14_budget = StringVar()
-entry_14_budget = Entry(budget, textvariable=var_14_budget, state='readonly')
-var_14_budget.set('INCOME')
-entry_14_budget.grid(row=2, column=0)
-
-var_2_budget = StringVar()
-entry_2_budget = Entry(budget, textvariable=var_2_budget, state='readonly')
-var_2_budget.set('HOUSING')
-entry_2_budget.grid(row=3, column=0)
-
-var_3_budget = StringVar()
-entry_3_budget = Entry(budget, textvariable=var_3_budget, state='readonly')
-var_3_budget.set('TRANSPORT')
-entry_3_budget.grid(row=4, column=0)
-
-var_4_budget = StringVar()
-entry_4_budget = Entry(budget, textvariable=var_4_budget, state='readonly')
-var_4_budget.set('FOOD')
-entry_4_budget.grid(row=5, column=0)
-
-var_5_budget = StringVar()
-entry_5_budget = Entry(budget, textvariable=var_5_budget, state='readonly')
-var_5_budget.set('UTILITYS')
-entry_5_budget.grid(row=6, column=0)
-
-var_6_budget = StringVar()
-entry_6_budget = Entry(budget, textvariable=var_6_budget, state='readonly')
-var_6_budget.set('INSURANCE')
-entry_6_budget.grid(row=7, column=0)
-
-var_7_budget = StringVar()
-entry_7_budget = Entry(budget, textvariable=var_7_budget, state='readonly')
-var_7_budget.set('MEDICAL')
-entry_7_budget.grid(row=8, column=0)
-
-var_8_budget = StringVar()
-entry_8_budget = Entry(budget, textvariable=var_8_budget, state='readonly')
-var_8_budget.set('PERSONAL SPENDING')
-entry_8_budget.grid(row=9, column=0)
-
-var_9_budget = StringVar()
-entry_9_budget = Entry(budget, textvariable=var_9_budget, state='readonly')
-var_9_budget.set('RECREATION')
-entry_9_budget.grid(row=10, column=0)
-
-var_10_budget = StringVar()
-entry_10_budget = Entry(budget, textvariable=var_10_budget, state='readonly')
-var_10_budget.set('MICELLANEOUS')
-entry_10_budget.grid(row=11, column=0)
-
-var_11_budget = StringVar()
-entry_11_budget = Entry(budget, textvariable=var_11_budget, state='readonly')
-var_11_budget.set('SAVINGS AND DEBT')
-entry_11_budget.grid(row=12, column=0)
-
-var_15_budget = StringVar()
-entry_15_budget = Entry(budget, textvariable=var_15_budget, state='readonly')
-var_15_budget.set('TOTAL')
-entry_15_budget.grid(row=13, column=0)
-
-var_1_budget = StringVar()
-entry_1_budget = Entry(budget, textvariable=var_1_budget, state='readonly')
-var_1_budget.set('Expenses per month')
-entry_1_budget.grid(row=1, column=1)
-
-var_12_budget = StringVar()
-entry_12_budget = Entry(budget, textvariable=var_12_budget, state='readonly')
-var_12_budget.set('Target Spending')
-entry_12_budget.grid(row=1, column=2)
-
-var_13_budget = StringVar()
-entry_13_budget = Entry(budget, textvariable=var_13_budget, state='readonly')
-var_13_budget.set('Amount to Spend')
-entry_13_budget.grid(row=1, column=3)
-
-var_16_budget = StringVar()
-entry_16_budget = Entry(budget, textvariable=var_16_budget, state='readonly')
-var_16_budget.set('Show a Tip')
-entry_16_budget.grid(row=1, column=4)
-
 cancel_button_budget = ttk.Button(budget, text="cancel", width=10, command=lambda: go_main_menu(budget))
 cancel_button_budget.grid(row=0, column=0)
 
 calculate_budget_button = ttk.Button(budget, text="calculate budget", width=20, command=lambda: calculate_budget())
 calculate_budget_button.grid(row=0, column=1)
 
-income_monthly_label = ttk.Entry(budget)
-income_monthly_label.grid(row=2, column=1)
+needs_ratio_label = ttk.Label(budget)
+needs_ratio_label.grid(row=1, column=0)
 
-housing_label = ttk.Entry(budget)
-housing_label.grid(row=3, column=1)
+wants_ratio_label = ttk.Label(budget)
+wants_ratio_label.grid(row=2, column=0)
 
-transport_label = ttk.Entry(budget)
-transport_label.grid(row=4, column=1)
+savings_ratio_label = ttk.Label(budget)
+savings_ratio_label.grid(row=3, column=0)
 
-food_label = ttk.Entry(budget)
-food_label.grid(row=5, column=1)
+housing_label = ttk.Label(budget)
+housing_label.grid(row=4, column=0)
 
-utilitys_label = ttk.Entry(budget)
-utilitys_label.grid(row=6, column=1)
+transport_label = ttk.Label(budget)
+transport_label.grid(row=5, column=0)
 
-insurance_label = ttk.Entry(budget)
-insurance_label.grid(row=7, column=1)
+food_label = ttk.Label(budget)
+food_label.grid(row=6, column=0)
 
-medical_label = ttk.Entry(budget)
-medical_label.grid(row=8, column=1)
+utilitys_label = ttk.Label(budget)
+utilitys_label.grid(row=7, column=0)
 
-personal_spending_label = ttk.Entry(budget)
-personal_spending_label.grid(row=9, column=1)
+insurance_label = ttk.Label(budget)
+insurance_label.grid(row=8, column=0)
 
-recreation_label = ttk.Entry(budget)
-recreation_label.grid(row=10, column=1)
-
-miscellaneous_label = ttk.Entry(budget)
-miscellaneous_label.grid(row=11, column=1)
-
-savings_debt_label = ttk.Entry(budget)
-savings_debt_label.grid(row=12, column=1)
-
-total_budget_label = ttk.Entry(budget)
-total_budget_label.grid(row=13, column=1)
-
-income_monthly_label_2 = ttk.Entry(budget)
-income_monthly_label_2.grid(row=2, column=2)
-
-housing_label_2 = ttk.Entry(budget)
-housing_label_2.grid(row=3, column=2)
-
-transport_label_2 = ttk.Entry(budget)
-transport_label_2.grid(row=4, column=2)
-
-food_label_2 = ttk.Entry(budget)
-food_label_2.grid(row=5, column=2)
-
-utilitys_label_2 = ttk.Entry(budget)
-utilitys_label_2.grid(row=6, column=2)
-
-insurance_label_2 = ttk.Entry(budget)
-insurance_label_2.grid(row=7, column=2)
-
-medical_label_2 = ttk.Entry(budget)
-medical_label_2.grid(row=8, column=2)
-
-personal_spending_label_2 = ttk.Entry(budget)
-personal_spending_label_2.grid(row=9, column=2)
-
-recreation_label_2 = ttk.Entry(budget)
-recreation_label_2.grid(row=10, column=2)
-
-miscellaneous_label_2 = ttk.Entry(budget)
-miscellaneous_label_2.grid(row=11, column=2)
-
-savings_debt_label_2 = ttk.Entry(budget)
-savings_debt_label_2.grid(row=12, column=2)
-
-total_budget_label_2 = ttk.Entry(budget)
-total_budget_label_2.grid(row=13, column=2)
-
-income_monthly_label_3 = ttk.Entry(budget)
-income_monthly_label_3.grid(row=2, column=3)
-
-housing_label_3 = ttk.Entry(budget)
-housing_label_3.grid(row=3, column=3)
-
-transport_label_3 = ttk.Entry(budget)
-transport_label_3.grid(row=4, column=3)
-
-food_label_3 = ttk.Entry(budget)
-food_label_3.grid(row=5, column=3)
-
-utilitys_label_3 = ttk.Entry(budget)
-utilitys_label_3.grid(row=6, column=3)
-
-insurance_label_3 = ttk.Entry(budget)
-insurance_label_3.grid(row=7, column=3)
-
-medical_label_3 = ttk.Entry(budget)
-medical_label_3.grid(row=8, column=3)
-
-personal_spending_label_3 = ttk.Entry(budget)
-personal_spending_label_3.grid(row=9, column=3)
-
-recreation_label_3 = ttk.Entry(budget)
-recreation_label_3.grid(row=10, column=3)
-
-miscellaneous_label_3 = ttk.Entry(budget)
-miscellaneous_label_3.grid(row=11, column=3)
-
-savings_debt_label_3 = ttk.Entry(budget)
-savings_debt_label_3.grid(row=12, column=3)
-
-total_budget_label_3 = ttk.Entry(budget)
-total_budget_label_3.grid(row=13, column=3)
-
-tip_button_budget_1 = ttk.Button(budget, text="show tip", width=10, command=lambda: tip_row_func_1())
-tip_button_budget_1.grid(row=3, column=4)
-
-tip_button_budget_2 = ttk.Button(budget, text="show tip", width=10, command=lambda: tip_row_func_2())
-tip_button_budget_2.grid(row=4, column=4)
-
-tip_button_budget_3 = ttk.Button(budget, text="show tip", width=10, command=lambda: tip_row_func_3())
-tip_button_budget_3.grid(row=5, column=4)
-
-tip_button_budget_4 = ttk.Button(budget, text="show tip", width=10, command=lambda: tip_row_func_4())
-tip_button_budget_4.grid(row=6, column=4)
-
-tip_button_budget_5 = ttk.Button(budget, text="show tip", width=10, command=lambda: tip_row_func_5())
-tip_button_budget_5.grid(row=7, column=4)
-
-tip_button_budget_6 = ttk.Button(budget, text="show tip", width=10, command=lambda: tip_row_func_6())
-tip_button_budget_6.grid(row=8, column=4)
-
-tip_button_budget_7 = ttk.Button(budget, text="show tip", width=10, command=lambda: tip_row_func_7())
-tip_button_budget_7.grid(row=9, column=4)
-
-tip_button_budget_8 = ttk.Button(budget, text="show tip", width=10, command=lambda: tip_row_func_8())
-tip_button_budget_8.grid(row=10, column=4)
-
-tip_button_budget_9 = ttk.Button(budget, text="show tip", width=10, command=lambda: tip_row_func_9())
-tip_button_budget_9.grid(row=11, column=4)
-
-tip_button_budget_10 = ttk.Button(budget, text="show tip", width=10, command=lambda: tip_row_func_10())
-tip_button_budget_10.grid(row=12, column=4)
+medical_label = ttk.Label(budget)
+medical_label.grid(row=9, column=0)
 
 # tips
-cancel_button_tips = ttk.Button(tips, text="cancel", width=10, command=lambda: budget_func())
+cancel_button_tips = ttk.Button(tips, text="cancel", width=10, command=lambda: go_main_menu(tips))
 cancel_button_tips.grid(row=0, column=0)
-
-tips_page_label = ttk.Label(tips, text="")
-tips_page_label.grid(row=1, column=0)
 
 main.mainloop()
 
@@ -975,7 +656,8 @@ yes_no = input("do you want to load file?")
 if yes_no == "yes":
     show1 = pickle.load(open("names.dat", "rb"))
     show2 = pickle.load(open("values.dat", "rb"))
-    show3 = pickle.load(open("ratio.dat", "rb"))
-    print(show1, show2, show3)
+    print(show1, show2)
 else:
     print("ok")
+
+# b = OptionMenu(input_page, clicked, *Spending_categories)
