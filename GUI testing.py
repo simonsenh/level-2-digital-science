@@ -32,18 +32,18 @@ vari_1 = [["usernames"], ["passwords"]]
 vari_2 = []
 vari_3 = [["row"], ["category"], ["type"], ["amount"], ["time"]]
 vari_6 = [["Housing", 0.196], ["Transportation", 0.17], ["Food", 0.074], ["Utilities", 0.137], ["Insurance", 0.026],
-          ["Medical & Healthcare", 0.026], ["Saving, Investing, & Debt Payments", 0.225],
-          ["Personal Spending", 0.045], ["Recreation & Entertainment", 0.51], ["Miscellaneous", 0.05]]
-vari_7 = [["Under spend housing", "Over spend housing"],
-          ["Under spend transport", "Over spend transport"],
-          ["Under spend food", "Over spend food"],
-          ["Under spend utilitys", "Over spend utilitys"],
-          ["Under spend insurance", "Over spend insurance"],
-          ["Under spend Medical & Healthcare", "Over spend Medical & Healthcare"],
-          ["Under spend Personal Spending", "Over spend Personal Spending"],
-          ["Under spend Recreation & Entertainment", "Over spend Recreation & Entertainment"],
-          ["Under spend Miscellaneous", "Over spend Miscellaneous"],
-          ["Under spend Saving, Investing, & Debt Payments", "Over spend Saving, Investing, & Debt Payments"]]
+          ["Medical & Healthcare", 0.026],
+          ["Personal Spending", 0.045], ["Recreation & Entertainment", 0.51], ["Miscellaneous", 0.05], ["Saving, Investing, & Debt Payments", 0.225]]
+vari_7 = [["watch out for housing which is better in the area in which they want to live", "watch out for housing which is cheaper in the area in which they want to live"],
+          ["It is important to spend money to visit new places and enjoy yourself", "Instead of making a trip whenever you think of something you need, make a list and only go out when this is necessary."],
+          ["Consider buying fresh organic produce to improve the environment and your nutrition", "Growing your own vegetables is a good way of saving money and provide great satisfaction."],
+          ["Consider moving to green energy supplier to support the environment", "get quotes from the utility suppliers in your area and change to the one that offers the best deal"],
+          ["Insurance is important to prevent a finacial catastraphy", "Look for better deals that might ofer you less"],
+          ["you are financialy able to spend money on healthcare", "Health problems cannot be avoid"],
+          ["Its important to spend money on clothing to keep yourself warm and dry throughout the year", "Buying second-hand can save a lot of money, remember to allways have money for needs"],
+          ["Its important to spend some money to enjoy yourself", "Do I really need it or can I get by without it?"],
+          ["You are free to spend money on your own things", "Try to think of something that you dont actually have to do"],
+          ["Spending money on yourself now is important for your well being", "Savings are a crucial investment for your future and safty net incase things go wrong"]]
 # choose = 0
 choose = input("Do you want to reset files?")
 if choose == "yes":
@@ -80,9 +80,6 @@ edit_input.grid_forget()
 budget = ttk.Frame(main)
 budget.grid(row=0, column=0)
 budget.grid_forget()
-tips = ttk.Frame(main)
-tips.grid(row=0, column=0)
-tips.grid_forget()
 
 
 # Go to main menu
@@ -97,7 +94,8 @@ def go_login(frame):
 
 
 def go_input_page(frame):
-    global counter
+    global counter, do_it
+    do_it = 0
     for row_s, row in reversed(list(enumerate(rows))):
         if row[0].val.get() == 1 or row[0].val.get() == 0:
             for integer in row:
@@ -121,6 +119,7 @@ def go_input_page(frame):
                 loop = 1
         counter_3 = 0
         while counter_3 < highest_row:
+            do_it = 1
             add_row()
             counter_3 += 1
     frame.grid_forget()
@@ -243,29 +242,47 @@ def signup_button_func():
 
 
 def budget_func():
-    tips.grid_forget()
     budget.grid(row=0, column=0)
+    calculate_budget()
 
 
 def tips_func():
-    budget.grid_forget()
+    # set up window
+    tips_window = Tk()
+    tips_window.title("TIP")
+    tips_window.geometry('500x100')
     main_menu.grid_forget()
+    # set up frame
+    tips = ttk.Frame(tips_window)
     tips.grid(row=0, column=0)
+    tips_page_label = ttk.Label(tips, text="")
+    tips_page_label.grid(row=0, column=0)
+    tips_page_label_2 = ttk.Label(tips, text="")
+    tips_page_label_2.grid(row=1, column=0)
+    # run function
     tips_load = pickle.load(open("tips.dat", "rb"))
+    tips_category_load = pickle.load(open("ratio.dat", "rb"))
     counter_3 = 0
     while counter_3 < 10:
         if tip_row == counter_3 + 1:
             if 0 < row_2_list[counter_3] - total_spending_categorys[counter_3][1]:
-                tips_page_label.config(text=tips_load[counter_3][1])
+                tips_page_label_2.config(text=tips_load[counter_3][1])
             elif row_2_list[counter_3] - total_spending_categorys[counter_3][1] == 0:
-                tips_page_label.config(text="This account is perfect")
+                tips_page_label_2.config(text="This account is perfect")
             else:
-                tips_page_label.config(text=tips_load[counter_3][0])
+                tips_page_label_2.config(text=tips_load[counter_3][0])
         counter_3 += 1
+    if 0 < row_2_list[tip_row - 1] - total_spending_categorys[tip_row - 1][1]:
+        y = "OVER"
+    else:
+        y = "UNDER"
+    x = (tips_category_load[(tip_row - 1)][0], y)
+    tips_page_label.config(text=x)
+
 
 
 def add_row():
-    global counter, counter_2, selected_row_2
+    global counter, counter_2, selected_row, do_it
     counter += 1
     items = []
     var = IntVar()
@@ -281,6 +298,11 @@ def add_row():
         entry.grid(row=counter, column=(counter_2 + 1))
         counter_2 += 1
     rows.append(items)
+    if do_it == 0:
+        selected_row = counter - 2
+        input_page.grid_forget()
+        edit_input.grid(row=0, column=0)
+    do_it = 0
 
 
 def delete_row():
@@ -420,6 +442,42 @@ def set_text():
 
 def calculate_budget():
     global row_2_list, total_spending_categorys
+    income_monthly_label.delete(0, END)
+    housing_label.delete(0, END)
+    transport_label.delete(0, END)
+    food_label.delete(0, END)
+    utilitys_label.delete(0, END)
+    insurance_label.delete(0, END)
+    medical_label.delete(0, END)
+    savings_debt_label.delete(0, END)
+    personal_spending_label.delete(0, END)
+    recreation_label.delete(0, END)
+    miscellaneous_label.delete(0, END)
+    total_budget_label.delete(0, END)
+    income_monthly_label_2.delete(0, END)
+    housing_label_2.delete(0, END)
+    transport_label_2.delete(0, END)
+    food_label_2.delete(0, END)
+    utilitys_label_2.delete(0, END)
+    insurance_label_2.delete(0, END)
+    medical_label_2.delete(0, END)
+    savings_debt_label_2.delete(0, END)
+    personal_spending_label_2.delete(0, END)
+    recreation_label_2.delete(0, END)
+    miscellaneous_label_2.delete(0, END)
+    total_budget_label_2.delete(0, END)
+    income_monthly_label_3.delete(0, END)
+    housing_label_3.delete(0, END)
+    transport_label_3.delete(0, END)
+    food_label_3.delete(0, END)
+    utilitys_label_3.delete(0, END)
+    insurance_label_3.delete(0, END)
+    medical_label_3.delete(0, END)
+    savings_debt_label_3.delete(0, END)
+    personal_spending_label_3.delete(0, END)
+    recreation_label_3.delete(0, END)
+    miscellaneous_label_3.delete(0, END)
+    total_budget_label_3.delete(0, END)
     calculate = pickle.load(open("values.dat", "rb"))
     spending_ratios = pickle.load(open("ratio.dat", "rb"))
     which_user = which_user_func()
@@ -501,7 +559,7 @@ def calculate_budget():
     food_label_3.insert(END, row_2_list[2] - total_spending_categorys[2][1])
     utilitys_label_3.insert(END, row_2_list[3] - total_spending_categorys[3][1])
     insurance_label_3.insert(END, row_2_list[4] - total_spending_categorys[4][1])
-    medical_label_3.insert(END, row_2_list[5] - total_spending_categorys[5][1])
+    medical_label_3.insert(END, (row_2_list[5] - total_spending_categorys[5][1]))
     savings_debt_label_3.insert(END, row_2_list[6] - total_spending_categorys[6][1])
     personal_spending_label_3.insert(END, row_2_list[7] - total_spending_categorys[7][1])
     recreation_label_3.insert(END, row_2_list[8] - total_spending_categorys[8][1])
@@ -692,7 +750,7 @@ entry_4.grid(row=1, column=4)
 
 # edit input
 
-username_label_signup = ttk.Label(edit_input, text="Edit row {}".format(selected_row + 1))
+username_label_signup = ttk.Label(edit_input, text="Edit row")
 username_label_signup.grid(row=0, column=0)
 
 cancel_button_edit = ttk.Button(edit_input, text="cancel", width=10, command=lambda: go_input_page(edit_input))
@@ -809,7 +867,8 @@ entry_12_budget.grid(row=1, column=2)
 
 var_13_budget = StringVar()
 entry_13_budget = Entry(budget, textvariable=var_13_budget, state='readonly')
-var_13_budget.set('Amount to Spend')
+var_13_budget.set('Underspend(negative)/'
+                  'Overspend(possitive)')
 entry_13_budget.grid(row=1, column=3)
 
 var_16_budget = StringVar()
@@ -819,9 +878,6 @@ entry_16_budget.grid(row=1, column=4)
 
 cancel_button_budget = ttk.Button(budget, text="cancel", width=10, command=lambda: go_main_menu(budget))
 cancel_button_budget.grid(row=0, column=0)
-
-calculate_budget_button = ttk.Button(budget, text="calculate budget", width=20, command=lambda: calculate_budget())
-calculate_budget_button.grid(row=0, column=1)
 
 income_monthly_label = ttk.Entry(budget)
 income_monthly_label.grid(row=2, column=1)
@@ -960,13 +1016,6 @@ tip_button_budget_9.grid(row=11, column=4)
 
 tip_button_budget_10 = ttk.Button(budget, text="show tip", width=10, command=lambda: tip_row_func_10())
 tip_button_budget_10.grid(row=12, column=4)
-
-# tips
-cancel_button_tips = ttk.Button(tips, text="cancel", width=10, command=lambda: budget_func())
-cancel_button_tips.grid(row=0, column=0)
-
-tips_page_label = ttk.Label(tips, text="")
-tips_page_label.grid(row=1, column=0)
 
 main.mainloop()
 
