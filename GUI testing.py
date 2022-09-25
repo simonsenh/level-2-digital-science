@@ -641,30 +641,43 @@ def which_user_func():
     return which_user
 
 
+def how_to():
+    how_to_window = Tk()
+    how_to_window.title("H.S.Budget")
+    how_to_window.geometry('600x200')
+    how_to_frame = ttk.Frame(how_to_window)
+    how_to_frame.grid(row=0, column=0)
+    how_to_text = ttk.Label(how_to_frame, text="In order to start using this program you will need to input your finances\n To do this enter the input page\n next add a new row and you will find yourself editing this row\n Next inpit the category of spending(housing) and particular(rent)\n Then add the amount you are getting or spending ech time period\n Repeat this until all of you expenses are in the system\n Then exit the input page the the main menu and go to the Budgeting page\n The first colum is what you are spending per month on a sertain category(housing)\n The second colum is what you should be spending\n The last colum is how much more you need to spend\n If you need any advice on how to reduce or increase spending in a certain category click the show tip button")
+    how_to_text.grid(row=0, column=0)
+
+
 # login page
-Login_title = ttk.Label(login, text="TITLE")
-Login_title.grid(row=0, column=3)
+Login_title = ttk.Label(login, text="H.S.Budgeting")
+Login_title.grid(row=0, column=2)
+
+Login_explain = ttk.Label(login, text="Managing your finances for your future")
+Login_explain.grid(row=1, column=2)
 
 username_label = ttk.Label(login, text="USERNAME")
-username_label.grid(row=0, column=0)
+username_label.grid(row=3, column=0)
 
 password_label = ttk.Label(login, text="PASSWORD")
-password_label.grid(row=1, column=0)
+password_label.grid(row=4, column=0)
 
 username_login_entry = ttk.Entry(login)
-username_login_entry.grid(row=0, column=1)
+username_login_entry.grid(row=3, column=1)
 
 password_login_entry = ttk.Entry(login)
-password_login_entry.grid(row=1, column=1)
+password_login_entry.grid(row=4, column=1)
 
 login_button = ttk.Button(login, text="login", width=10, command=lambda: login_func())
-login_button.grid(row=3, column=0)
+login_button.grid(row=5, column=0)
 
 signup_button = ttk.Button(login, text="sign up", width=10, command=lambda: signup_func())
-signup_button.grid(row=3, column=1)
+signup_button.grid(row=5, column=1)
 
 error_message_login = ttk.Label(login, text="", foreground="red")
-error_message_login.grid(row=2, column=0)
+error_message_login.grid(row=6, column=0)
 
 # signup page
 signup_title = ttk.Label(signup, text="TITLE")
@@ -706,6 +719,9 @@ input_page_button.grid(row=1, column=0)
 
 budget_button = ttk.Button(main_menu, text="budget", width=10, command=lambda: budget_func())
 budget_button.grid(row=1, column=1)
+
+how_to_button = ttk.Button(main_menu, text="How to use H.S.Budget", width=20, command=lambda: how_to())
+how_to_button.grid(row=1, column=2)
 
 # input page
 add_row_button = ttk.Button(input_page, text='Add Row', command=add_row)
