@@ -38,12 +38,12 @@ vari_7 = [["watch out for housing which is better in the area in which they want
           ["It is important to spend money to visit new places and enjoy yourself", "Instead of making a trip whenever you think of something you need, make a list and only go out when this is necessary."],
           ["Consider buying fresh organic produce to improve the environment and your nutrition", "Growing your own vegetables is a good way of saving money and provide great satisfaction."],
           ["Consider moving to green energy supplier to support the environment", "get quotes from the utility suppliers in your area and change to the one that offers the best deal"],
-          ["Insurance is important to prevent a finacial catastraphy", "Look for better deals that might ofer you less"],
-          ["you are financialy able to spend money on healthcare", "Health problems cannot be avoid"],
-          ["Its important to spend money on clothing to keep yourself warm and dry throughout the year", "Buying second-hand can save a lot of money, remember to allways have money for needs"],
+          ["Insurance is important to prevent a financial catastrophe", "Look for better deals that might ofer you less"],
+          ["you are financially able to spend money on healthcare", "Health problems cannot be avoid"],
+          ["Its important to spend money on clothing to keep yourself warm and dry throughout the year", "Buying second-hand can save a lot of money, remember to always have money for needs"],
           ["Its important to spend some money to enjoy yourself", "Do I really need it or can I get by without it?"],
-          ["You are free to spend money on your own things", "Try to think of something that you dont actually have to do"],
-          ["Spending money on yourself now is important for your well being", "Savings are a crucial investment for your future and safty net incase things go wrong"]]
+          ["You are free to spend money on your own things", "Try to think of something that you don't actually have to do"],
+          ["Spending money on yourself now is important for your well being", "Savings are a crucial investment for your future and safety net in case things go wrong"]]
 # choose = 0
 choose = input("Do you want to reset files?")
 if choose == "yes":
@@ -265,14 +265,14 @@ def tips_func():
     counter_3 = 0
     while counter_3 < 10:
         if tip_row == counter_3 + 1:
-            if 0 < row_2_list[counter_3] - total_spending_categorys[counter_3][1]:
+            if 0 < row_2_list[counter_3] - total_spending_category[counter_3][1]:
                 tips_page_label_2.config(text=tips_load[counter_3][1])
-            elif row_2_list[counter_3] - total_spending_categorys[counter_3][1] == 0:
+            elif row_2_list[counter_3] - total_spending_category[counter_3][1] == 0:
                 tips_page_label_2.config(text="This account is perfect")
             else:
                 tips_page_label_2.config(text=tips_load[counter_3][0])
         counter_3 += 1
-    if 0 < row_2_list[tip_row - 1] - total_spending_categorys[tip_row - 1][1]:
+    if 0 < row_2_list[tip_row - 1] - total_spending_category[tip_row - 1][1]:
         y = "OVER"
     else:
         y = "UNDER"
@@ -441,12 +441,12 @@ def set_text():
 
 
 def calculate_budget():
-    global row_2_list, total_spending_categorys
+    global row_2_list, total_spending_category
     income_monthly_label.delete(0, END)
     housing_label.delete(0, END)
     transport_label.delete(0, END)
     food_label.delete(0, END)
-    utilitys_label.delete(0, END)
+    utilities_label.delete(0, END)
     insurance_label.delete(0, END)
     medical_label.delete(0, END)
     savings_debt_label.delete(0, END)
@@ -458,7 +458,7 @@ def calculate_budget():
     housing_label_2.delete(0, END)
     transport_label_2.delete(0, END)
     food_label_2.delete(0, END)
-    utilitys_label_2.delete(0, END)
+    utilities_label_2.delete(0, END)
     insurance_label_2.delete(0, END)
     medical_label_2.delete(0, END)
     savings_debt_label_2.delete(0, END)
@@ -470,7 +470,7 @@ def calculate_budget():
     housing_label_3.delete(0, END)
     transport_label_3.delete(0, END)
     food_label_3.delete(0, END)
-    utilitys_label_3.delete(0, END)
+    utilities_label_3.delete(0, END)
     insurance_label_3.delete(0, END)
     medical_label_3.delete(0, END)
     savings_debt_label_3.delete(0, END)
@@ -485,12 +485,12 @@ def calculate_budget():
     total_amount_2 = 0
     total_amount_3 = 0
     row_2_list = []
-    total_spending_categorys = []
+    total_spending_category = []
     counter_3 = 0
     while len(spending_ratios) != counter_3:
-        total_spending_categorys.append([spending_ratios[counter_3][0], 0])
+        total_spending_category.append([spending_ratios[counter_3][0], 0])
         counter_3 += 1
-    total_spending_categorys.append(["Income", 0])
+    total_spending_category.append(["Income", 0])
     counter_3 = 1
     while len(calculate[which_user][4]) > counter_3:
         if calculate[which_user][5][counter_3] == "Days":
@@ -505,41 +505,41 @@ def calculate_budget():
         amount_per_month = round(amount_per_month, ndigits=2)
         counter_4 = 0
         while counter_4 < 11:
-            if calculate[which_user][2][counter_3] == total_spending_categorys[counter_4][0]:
-                y = total_spending_categorys[counter_4][1]
+            if calculate[which_user][2][counter_3] == total_spending_category[counter_4][0]:
+                y = total_spending_category[counter_4][1]
                 y += amount_per_month
-                total_spending_categorys[counter_4][1] = y
+                total_spending_category[counter_4][1] = y
             counter_4 += 1
         total_amount += amount_per_month
         total_amount = round(total_amount, ndigits=2)
         counter_3 += 1
     # row one
-    income_monthly_label.insert(END, total_spending_categorys[10][1])
-    housing_label.insert(END, total_spending_categorys[0][1])
-    transport_label.insert(END, total_spending_categorys[1][1])
-    food_label.insert(END, total_spending_categorys[2][1])
-    utilitys_label.insert(END, total_spending_categorys[3][1])
-    insurance_label.insert(END, total_spending_categorys[4][1])
-    medical_label.insert(END, total_spending_categorys[5][1])
-    savings_debt_label.insert(END, total_spending_categorys[6][1])
-    personal_spending_label.insert(END, total_spending_categorys[7][1])
-    recreation_label.insert(END, total_spending_categorys[8][1])
-    miscellaneous_label.insert(END, total_spending_categorys[9][1])
+    income_monthly_label.insert(END, total_spending_category[10][1])
+    housing_label.insert(END, total_spending_category[0][1])
+    transport_label.insert(END, total_spending_category[1][1])
+    food_label.insert(END, total_spending_category[2][1])
+    utilities_label.insert(END, total_spending_category[3][1])
+    insurance_label.insert(END, total_spending_category[4][1])
+    medical_label.insert(END, total_spending_category[5][1])
+    savings_debt_label.insert(END, total_spending_category[6][1])
+    personal_spending_label.insert(END, total_spending_category[7][1])
+    recreation_label.insert(END, total_spending_category[8][1])
+    miscellaneous_label.insert(END, total_spending_category[9][1])
     total_budget_label.insert(END, total_amount)
     # row two
     counter_3 = 0
     while counter_3 < 10:
-        total_amount_2 += total_spending_categorys[10][1] * spending_ratios[counter_3][1]
-        y = -(total_spending_categorys[10][1] * spending_ratios[counter_3][1])
+        total_amount_2 += total_spending_category[10][1] * spending_ratios[counter_3][1]
+        y = -(total_spending_category[10][1] * spending_ratios[counter_3][1])
         y = round(y, ndigits=2)
         row_2_list.append(y)
         counter_3 += 1
     total_amount_2 = round(total_amount_2, ndigits=2)
-    income_monthly_label_2.insert(END, total_spending_categorys[10][1])
+    income_monthly_label_2.insert(END, total_spending_category[10][1])
     housing_label_2.insert(END, row_2_list[0])
     transport_label_2.insert(END, row_2_list[1])
     food_label_2.insert(END, row_2_list[2])
-    utilitys_label_2.insert(END, row_2_list[3])
+    utilities_label_2.insert(END, row_2_list[3])
     insurance_label_2.insert(END, row_2_list[4])
     medical_label_2.insert(END, row_2_list[5])
     savings_debt_label_2.insert(END, row_2_list[6])
@@ -550,20 +550,20 @@ def calculate_budget():
     # row three
     counter_3 = 0
     while counter_3 < 10:
-        total_amount_3 += (row_2_list[counter_3] - total_spending_categorys[counter_3][1])
+        total_amount_3 += (row_2_list[counter_3] - total_spending_category[counter_3][1])
         counter_3 += 1
     total_amount_3 = round(total_amount_3, ndigits=2)
-    income_monthly_label_3.insert(END, total_spending_categorys[10][1])
-    housing_label_3.insert(END, row_2_list[0] - total_spending_categorys[0][1])
-    transport_label_3.insert(END, row_2_list[1] - total_spending_categorys[1][1])
-    food_label_3.insert(END, row_2_list[2] - total_spending_categorys[2][1])
-    utilitys_label_3.insert(END, row_2_list[3] - total_spending_categorys[3][1])
-    insurance_label_3.insert(END, row_2_list[4] - total_spending_categorys[4][1])
-    medical_label_3.insert(END, (row_2_list[5] - total_spending_categorys[5][1]))
-    savings_debt_label_3.insert(END, row_2_list[6] - total_spending_categorys[6][1])
-    personal_spending_label_3.insert(END, row_2_list[7] - total_spending_categorys[7][1])
-    recreation_label_3.insert(END, row_2_list[8] - total_spending_categorys[8][1])
-    miscellaneous_label_3.insert(END, row_2_list[9] - total_spending_categorys[9][1])
+    income_monthly_label_3.insert(END, total_spending_category[10][1])
+    housing_label_3.insert(END, row_2_list[0] - total_spending_category[0][1])
+    transport_label_3.insert(END, row_2_list[1] - total_spending_category[1][1])
+    food_label_3.insert(END, row_2_list[2] - total_spending_category[2][1])
+    utilities_label_3.insert(END, row_2_list[3] - total_spending_category[3][1])
+    insurance_label_3.insert(END, row_2_list[4] - total_spending_category[4][1])
+    medical_label_3.insert(END, (row_2_list[5] - total_spending_category[5][1]))
+    savings_debt_label_3.insert(END, row_2_list[6] - total_spending_category[6][1])
+    personal_spending_label_3.insert(END, row_2_list[7] - total_spending_category[7][1])
+    recreation_label_3.insert(END, row_2_list[8] - total_spending_category[8][1])
+    miscellaneous_label_3.insert(END, row_2_list[9] - total_spending_category[9][1])
     total_budget_label_3.insert(END, total_amount_3)
 
 
@@ -647,7 +647,7 @@ def how_to():
     how_to_window.geometry('600x200')
     how_to_frame = ttk.Frame(how_to_window)
     how_to_frame.grid(row=0, column=0)
-    how_to_text = ttk.Label(how_to_frame, text="In order to start using this program you will need to input your finances\n To do this enter the input page\n next add a new row and you will find yourself editing this row\n Next inpit the category of spending(housing) and particular(rent)\n Then add the amount you are getting or spending ech time period\n Repeat this until all of you expenses are in the system\n Then exit the input page the the main menu and go to the Budgeting page\n The first colum is what you are spending per month on a sertain category(housing)\n The second colum is what you should be spending\n The last colum is how much more you need to spend\n If you need any advice on how to reduce or increase spending in a certain category click the show tip button")
+    how_to_text = ttk.Label(how_to_frame, text="In order to start using this program you will need to input your finances\n To do this enter the input page\n next add a new row and you will find yourself editing this row\n Next input the category of spending(housing) and particular(rent)\n Then add the amount you are getting or spending ech time period\n Repeat this until all of you expenses are in the system\n Then exit the input page the the main menu and go to the Budgeting page\n The first column is what you are spending per month on a certain category(housing)\n The second column is what you should be spending\n The last column is how much more you need to spend\n If you need any advice on how to reduce or increase spending in a certain category click the show tip button")
     how_to_text.grid(row=0, column=0)
 
 
@@ -833,7 +833,7 @@ entry_4_budget.grid(row=5, column=0)
 
 var_5_budget = StringVar()
 entry_5_budget = Entry(budget, textvariable=var_5_budget, state='readonly')
-var_5_budget.set('UTILITYS')
+var_5_budget.set('UTILITIES')
 entry_5_budget.grid(row=6, column=0)
 
 var_6_budget = StringVar()
@@ -858,7 +858,7 @@ entry_9_budget.grid(row=10, column=0)
 
 var_10_budget = StringVar()
 entry_10_budget = Entry(budget, textvariable=var_10_budget, state='readonly')
-var_10_budget.set('MICELLANEOUS')
+var_10_budget.set('MISCELLANEOUS')
 entry_10_budget.grid(row=11, column=0)
 
 var_11_budget = StringVar()
@@ -884,7 +884,7 @@ entry_12_budget.grid(row=1, column=2)
 var_13_budget = StringVar()
 entry_13_budget = Entry(budget, textvariable=var_13_budget, state='readonly')
 var_13_budget.set('Underspend(negative)/'
-                  'Overspend(possitive)')
+                  'Overspend(positive)')
 entry_13_budget.grid(row=1, column=3)
 
 var_16_budget = StringVar()
@@ -907,8 +907,8 @@ transport_label.grid(row=4, column=1)
 food_label = ttk.Entry(budget)
 food_label.grid(row=5, column=1)
 
-utilitys_label = ttk.Entry(budget)
-utilitys_label.grid(row=6, column=1)
+utilities_label = ttk.Entry(budget)
+utilities_label.grid(row=6, column=1)
 
 insurance_label = ttk.Entry(budget)
 insurance_label.grid(row=7, column=1)
@@ -943,8 +943,8 @@ transport_label_2.grid(row=4, column=2)
 food_label_2 = ttk.Entry(budget)
 food_label_2.grid(row=5, column=2)
 
-utilitys_label_2 = ttk.Entry(budget)
-utilitys_label_2.grid(row=6, column=2)
+utilities_label_2 = ttk.Entry(budget)
+utilities_label_2.grid(row=6, column=2)
 
 insurance_label_2 = ttk.Entry(budget)
 insurance_label_2.grid(row=7, column=2)
@@ -979,8 +979,8 @@ transport_label_3.grid(row=4, column=3)
 food_label_3 = ttk.Entry(budget)
 food_label_3.grid(row=5, column=3)
 
-utilitys_label_3 = ttk.Entry(budget)
-utilitys_label_3.grid(row=6, column=3)
+utilities_label_3 = ttk.Entry(budget)
+utilities_label_3.grid(row=6, column=3)
 
 insurance_label_3 = ttk.Entry(budget)
 insurance_label_3.grid(row=7, column=3)
