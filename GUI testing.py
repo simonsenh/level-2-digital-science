@@ -61,6 +61,12 @@ try:
 except:
     print("error with values")
 
+# Set error window
+error = Toplevel()
+error.title("ERROR")
+error.withdraw()
+
+
 # Frames
 login = ttk.Frame(main)
 login.grid(row=0, column=0)
@@ -91,6 +97,19 @@ def go_main_menu(frame):
 def go_login(frame):
     frame.grid_forget()
     login.grid(row=0, column=0)
+
+
+# Display error message
+def error_message(error_message_message):
+    global error
+    try:
+        error.deiconify()
+    except:
+        error = Toplevel()
+    error_frame = ttk.Frame(error)
+    error_frame.grid(row=0, column=0)
+    error_label_error = ttk.Label(error_frame, text=error_message_message, foreground="red")
+    error_label_error.grid(row=0, column=0)
 
 
 # Go to input page and display all rows
@@ -173,9 +192,9 @@ def login_func():
         else:
             valid_2 = 2
     if valid_2 == 1:
-        error_message_login.config(text="WRONG USERNAME!")
+        error_message("WRONG USERNAME!")
     elif valid_2 == 2:
-        error_message_login.config(text="WRONG PASSWORD!")
+        error_message("WRONG PASSWORD!")
     elif valid == 3:
         current_username = username_tests
         login.grid_forget()
@@ -184,7 +203,7 @@ def login_func():
 
 # Go to sign up page
 def signup_func():
-    global username_signup_entry, password_signup_entry, password_signup_entry_check
+    global username_signup_entry, password_signup_entry, password_signup_entry_check, error_message_message, should_error
     login.grid_forget()
     signup.grid(row=0, column=0)
 
@@ -221,16 +240,15 @@ def signup_button_func():
             loop = 1
     if valid == 2:
         if password != password2:
-            error_message_signup.config(
-                text="PASSWORDS NEED TO MATCH!                                                                    ")
+            error_message("PASSWORDS NEED TO MATCH!")
         elif len(username) > 20:
-            error_message_signup.config(text="USERNAME NEEDS TO BE LESS THAN TWENTY CHARACTERS!")
+            error_message("USERNAME NEEDS TO BE LESS THAN TWENTY CHARACTERS!(security)")
         elif len(username) < 8:
-            error_message_signup.config(text="USERNAME NEEDS TO BE MORE THAN EIGHT CHARACTERS! ")
+            error_message("USERNAME NEEDS TO BE MORE THAN EIGHT CHARACTERS! (security)")
         elif len(password) < 8:
-            error_message_signup.config(text="PASSWORD NEEDS TO BE MORE THAN EIGHT CHARACTERS! ")
+            error_message("PASSWORD NEEDS TO BE MORE THAN EIGHT CHARACTERS! (security)")
         elif len(password) > 20:
-            error_message_signup.config(text="PASSWORD NEEDS TO BE LESS THAN TWENTY CHARACTERS!")
+            error_message("PASSWORD NEEDS TO BE LESS THAN TWENTY CHARACTERS!(security)")
         else:
             username_passwords[0].append(username)
             username_passwords[1].append(password)
@@ -242,7 +260,7 @@ def signup_button_func():
             signup.grid_forget()
             login.grid(row=0, column=0)
     else:
-        error_message_signup.config(text="PASSWORD OR USERNAME HAS BEEN TAKEN!")
+        error_message("PASSWORD OR USERNAME HAS BEEN TAKEN!")
 
 
 # Go to budget page
@@ -408,12 +426,10 @@ def edit_row():
             selected_row = counter_3 + 1
         counter_3 += 1
     if num_rows > 1:
-        error_message_input.config(text="CAN ONLY EDIT ONE ROW AT A TIME!                                 ")
+        error_message("CAN ONLY EDIT ONE ROW AT A TIME!")
     elif num_rows == 0:
-        error_message_input.config(text="MUST SELECTED A ROW BEFORE YOU CAN EDIT!")
+        error_message("MUST SELECTED A ROW BEFORE YOU CAN EDIT!")
     else:
-        error_message_input.config(
-            text="                                                                                                       ")
         input_page.grid_forget()
         edit_input.grid(row=0, column=0)
 
@@ -433,16 +449,16 @@ def edit_func():
     except:
         amount = "s"
     if amount == "s":
-        error_message_edit.config(text="AMOUNT MUST BE A NUMBER!")
+        error_message("AMOUNT MUST BE A NUMBER!")
         check = 1
     elif category == "Income":
         if amount < 0:
             check = 1
-            error_message_edit.config(text="AMOUNT MUST BE POSITIVE!")
+            error_message("AMOUNT MUST BE POSITIVE!")
     else:
         if amount > 0:
             check = 1
-            error_message_edit.config(text="AMOUNT MUST BE NEGATIVE!")
+            error_message("AMOUNT MUST BE NEGATIVE!")
     if check == 0:
         counter_3 = 1
         insert = 0
@@ -727,9 +743,6 @@ login_button.grid(row=5, column=0)
 signup_button = ttk.Button(login, text="sign up", width=10, command=lambda: signup_func())
 signup_button.grid(row=5, column=1)
 
-error_message_login = ttk.Label(login, text="", foreground="red")
-error_message_login.grid(row=6, column=0)
-
 # signup page
 signup_title = ttk.Label(signup, text="TITLE")
 signup_title.grid(row=0, column=3)
@@ -758,9 +771,6 @@ signup_page_button.grid(row=4, column=0)
 cancel_button = ttk.Button(signup, text="cancel", width=10, command=lambda: go_login(signup))
 cancel_button.grid(row=4, column=1)
 
-error_message_signup = ttk.Label(signup, text="", foreground="red")
-error_message_signup.grid(row=3, column=0)
-
 # Main menu
 main_menu_title = ttk.Label(main_menu, text="TITLE")
 main_menu_title.grid(row=0, column=0)
@@ -786,9 +796,6 @@ edit_row_button.grid(row=0, column=2)
 
 cancel_button_input = ttk.Button(input_page, text="cancel", width=10, command=lambda: go_main_menu(input_page))
 cancel_button_input.grid(row=0, column=3)
-
-error_message_input = ttk.Label(input_page, text="", foreground="red")
-error_message_input.grid(row=0, column=5)
 
 var_0 = StringVar()
 entry_0 = Entry(input_page, textvariable=var_0, state='readonly')
@@ -825,9 +832,6 @@ cancel_button_edit.grid(row=0, column=1)
 
 done_button_edit = ttk.Button(edit_input, text="done", width=10, command=lambda: edit_func())
 done_button_edit.grid(row=0, column=2)
-
-error_message_edit = ttk.Label(edit_input, text="", foreground="red")
-error_message_edit.grid(row=3, column=0)
 
 var_1_edit = StringVar()
 entry_1_edit = Entry(edit_input, textvariable=var_1_edit, state='readonly')
