@@ -23,7 +23,7 @@ Spending_categories = ["Housing", "Transportation", "Food", "Utilities", "Insura
                        "Miscellaneous", "Income"]
 clicked = StringVar()
 clicked.set("Housing")
-time_types = ["Days", "Weeks", "Months", "Years"]
+time_types = ["Daily", "Weekly", "Monthly", "Yearly"]
 click = StringVar()
 click.set("Days")
 
@@ -61,11 +61,15 @@ try:
 except:
     print("error with values")
 
-# Set error window
+# Set up error window
 error = Toplevel()
 error.title("ERROR")
 error.withdraw()
 
+# Set up tips window
+tips_window = Toplevel()
+tips_window.title("TIP")
+tips_window.withdraw()
 
 # Frames
 login = ttk.Frame(main)
@@ -271,11 +275,17 @@ def budget_func():
 
 # Display a seperate window with a tip
 def tips_func():
-    # set up window
-    tips_window = Tk()
-    tips_window.title("TIP")
-    tips_window.geometry('500x100')
+    global tips_window
+    try:
+        tips_window.deiconify()
+    except:
+        tips_window = Toplevel()
     main_menu.grid_forget()
+    login.grid_forget()
+    signup.grid_forget()
+    main_menu.grid_forget()
+    input_page.grid_forget()
+    edit_input.grid_forget()
     # set up frame
     tips = ttk.Frame(tips_window)
     tips.grid(row=0, column=0)
@@ -287,21 +297,22 @@ def tips_func():
     tips_load = pickle.load(open("tips.dat", "rb"))
     tips_category_load = pickle.load(open("ratio.dat", "rb"))
     counter_3 = 0
+    c = "                                                                                                             "
     while counter_3 < 10:
         if tip_row == counter_3 + 1:
             if 0 < row_2_list[counter_3] - total_spending_category[counter_3][1]:
-                tips_page_label_2.config(text=tips_load[counter_3][1])
+                tips_page_label_2.config(text="{}{}{}".format(c, tips_load[counter_3][1], c))
             elif row_2_list[counter_3] - total_spending_category[counter_3][1] == 0:
-                tips_page_label_2.config(text="This account is perfect")
+                tips_page_label_2.config(text="{}This account is perfect{}".format(c, c))
             else:
-                tips_page_label_2.config(text=tips_load[counter_3][0])
+                tips_page_label_2.config(text="{}{}{}".format(c, tips_load[counter_3][0], c))
         counter_3 += 1
     if 0 < row_2_list[tip_row - 1] - total_spending_category[tip_row - 1][1]:
         y = "OVER"
     else:
         y = "UNDER"
     x = (tips_category_load[(tip_row - 1)][0], y)
-    tips_page_label.config(text=x)
+    tips_page_label.config(text="{}{}{}".format(c, x, c))
 
 
 # Add a row to the input page and go to edit that row
@@ -479,6 +490,8 @@ def edit_func():
             values_load[which_user][4][insert] = amount
             values_load[which_user][5][insert] = time_category
         pickle.dump(values_load, open("values.dat", "wb"))
+        entry_edit_1.delete(0, END)
+        entry_edit_2.delete(0, END)
         go_input_page(edit_input)
 
 
@@ -558,7 +571,7 @@ def calculate_budget():
     counter_3 = 1
     while len(calculate[which_user][4]) > counter_3:
         if calculate[which_user][5][counter_3] == "Days":
-            amount_per_month = 356 / 12
+            amount_per_month = 365 / 12
         elif calculate[which_user][5][counter_3] == "Weeks":
             amount_per_month = 52 / 12
         elif calculate[which_user][5][counter_3] == "Years":
@@ -585,10 +598,10 @@ def calculate_budget():
     utilities_label.insert(END, total_spending_category[3][1])
     insurance_label.insert(END, total_spending_category[4][1])
     medical_label.insert(END, total_spending_category[5][1])
-    savings_debt_label.insert(END, total_spending_category[6][1])
-    personal_spending_label.insert(END, total_spending_category[7][1])
-    recreation_label.insert(END, total_spending_category[8][1])
-    miscellaneous_label.insert(END, total_spending_category[9][1])
+    personal_spending_label.insert(END, total_spending_category[6][1])
+    recreation_label.insert(END, total_spending_category[7][1])
+    miscellaneous_label.insert(END, total_spending_category[8][1])
+    savings_debt_label.insert(END, total_spending_category[9][1])
     total_budget_label.insert(END, total_amount)
     # row two
     counter_3 = 0
@@ -606,11 +619,11 @@ def calculate_budget():
     utilities_label_2.insert(END, row_2_list[3])
     insurance_label_2.insert(END, row_2_list[4])
     medical_label_2.insert(END, row_2_list[5])
-    savings_debt_label_2.insert(END, row_2_list[6])
-    personal_spending_label_2.insert(END, row_2_list[7])
-    recreation_label_2.insert(END, row_2_list[8])
-    miscellaneous_label_2.insert(END, row_2_list[9])
-    total_budget_label_2.insert(END, total_spending_category[10][1])
+    personal_spending_label_2.insert(END, row_2_list[6])
+    recreation_label_2.insert(END, row_2_list[7])
+    miscellaneous_label_2.insert(END, row_2_list[8])
+    savings_debt_label_2.insert(END, row_2_list[9])
+    total_budget_label_2.insert(END, -total_spending_category[10][1])
     # row three
     counter_3 = 0
     while counter_3 < 10:
@@ -624,11 +637,11 @@ def calculate_budget():
     utilities_label_3.insert(END, row_2_list[3] - total_spending_category[3][1])
     insurance_label_3.insert(END, row_2_list[4] - total_spending_category[4][1])
     medical_label_3.insert(END, (row_2_list[5] - total_spending_category[5][1]))
-    savings_debt_label_3.insert(END, row_2_list[6] - total_spending_category[6][1])
-    personal_spending_label_3.insert(END, row_2_list[7] - total_spending_category[7][1])
-    recreation_label_3.insert(END, row_2_list[8] - total_spending_category[8][1])
-    miscellaneous_label_3.insert(END, row_2_list[9] - total_spending_category[9][1])
-    total_budget_label_3.insert(END, total_spending_category[10][1])
+    personal_spending_label_3.insert(END, row_2_list[6] - total_spending_category[6][1])
+    recreation_label_3.insert(END, row_2_list[7] - total_spending_category[7][1])
+    miscellaneous_label_3.insert(END, row_2_list[8] - total_spending_category[8][1])
+    savings_debt_label_3.insert(END, row_2_list[9] - total_spending_category[9][1])
+    total_budget_label_3.insert(END, total_amount_3)
 
 
 # Functions for tips
@@ -707,17 +720,6 @@ def which_user_func():
     return which_user
 
 
-# Function that displays in a seperate window instruction for how to use the applicattion
-def how_to():
-    how_to_window = Tk()
-    how_to_window.title("H.S.Budget")
-    how_to_window.geometry('600x200')
-    how_to_frame = ttk.Frame(how_to_window)
-    how_to_frame.grid(row=0, column=0)
-    how_to_text = ttk.Label(how_to_frame, text="In order to start using this program you will need to input your finances\n To do this enter the input page\n next add a new row and you will find yourself editing this row\n Next input the category of spending(housing) and particular(rent)\n Then add the amount you are getting or spending ech time period\n Repeat this until all of you expenses are in the system\n Then exit the input page the the main menu and go to the Budgeting page\n The first column is what you are spending per month on a certain category(housing)\n The second column is what you should be spending\n The last column is how much more you need to spend\n If you need any advice on how to reduce or increase spending in a certain category click the show tip button")
-    how_to_text.grid(row=0, column=0)
-
-
 # login page
 Login_title = ttk.Label(login, text="H.S.Budgeting")
 Login_title.grid(row=0, column=2)
@@ -744,7 +746,7 @@ signup_button = ttk.Button(login, text="sign up", width=10, command=lambda: sign
 signup_button.grid(row=5, column=1)
 
 # signup page
-signup_title = ttk.Label(signup, text="TITLE")
+signup_title = ttk.Label(signup, text="H.S.Budgeting")
 signup_title.grid(row=0, column=3)
 
 username_label_signup = ttk.Label(signup, text="USERNAME")
@@ -772,7 +774,7 @@ cancel_button = ttk.Button(signup, text="cancel", width=10, command=lambda: go_l
 cancel_button.grid(row=4, column=1)
 
 # Main menu
-main_menu_title = ttk.Label(main_menu, text="TITLE")
+main_menu_title = ttk.Label(main_menu, text="H.S.Budgeting")
 main_menu_title.grid(row=0, column=0)
 
 input_page_button = ttk.Button(main_menu, text="input page", width=10, command=lambda: go_input_page(main_menu))
@@ -781,8 +783,8 @@ input_page_button.grid(row=1, column=0)
 budget_button = ttk.Button(main_menu, text="budget", width=10, command=lambda: budget_func())
 budget_button.grid(row=1, column=1)
 
-how_to_button = ttk.Button(main_menu, text="How to use H.S.Budget", width=20, command=lambda: how_to())
-how_to_button.grid(row=1, column=2)
+how_to_text = ttk.Label(main_menu, text="HOW TO USE H.S.BUDGET\n In order to start using this program you will need to input your finances\n To do this enter the input page\n next add a new row and you will find yourself editing this row\n Next input the category of spending(housing) and particular(rent)\n Then add the amount you are getting or spending ech time period\n Repeat this until all of you expenses are in the system\n Then exit the input page the the main menu and go to the Budgeting page\n The first column is what you are spending per month on a certain category(housing)\n The second column is what you should be spending\n The last column is how much more you need to spend\n If you need any advice on how to reduce or increase spending in a certain category click the show tip button")
+how_to_text.grid(row=2, column=0)
 
 # input page
 add_row_button = ttk.Button(input_page, text='Add Row', command=add_row)
@@ -794,7 +796,7 @@ delete_row_button.grid(row=0, column=1)
 edit_row_button = ttk.Button(input_page, text="Edit Row", width=10, command=lambda: edit_row())
 edit_row_button.grid(row=0, column=2)
 
-cancel_button_input = ttk.Button(input_page, text="cancel", width=10, command=lambda: go_main_menu(input_page))
+cancel_button_input = ttk.Button(input_page, text="Close", width=10, command=lambda: go_main_menu(input_page))
 cancel_button_input.grid(row=0, column=3)
 
 var_0 = StringVar()
@@ -809,7 +811,7 @@ entry_1.grid(row=1, column=1)
 
 var_2 = StringVar()
 entry_2 = Entry(input_page, textvariable=var_2, state='readonly')
-var_2.set('Spending type')
+var_2.set('Description')
 entry_2.grid(row=1, column=2)
 
 var_3 = StringVar()
@@ -835,12 +837,12 @@ done_button_edit.grid(row=0, column=2)
 
 var_1_edit = StringVar()
 entry_1_edit = Entry(edit_input, textvariable=var_1_edit, state='readonly')
-var_1_edit.set('Spending category')
+var_1_edit.set('Category')
 entry_1_edit.grid(row=1, column=0)
 
 var_2_edit = StringVar()
 entry_2_edit = Entry(edit_input, textvariable=var_2_edit, state='readonly')
-var_2_edit.set('Spending type')
+var_2_edit.set('Description')
 entry_2_edit.grid(row=1, column=1)
 
 var_3_edit = StringVar()
@@ -850,7 +852,7 @@ entry_3_edit.grid(row=1, column=2)
 
 var_4_edit = StringVar()
 entry_4_edit = Entry(edit_input, textvariable=var_4_edit, state='readonly')
-var_4_edit.set('Time category')
+var_4_edit.set('Frequency')
 entry_4_edit.grid(row=1, column=3)
 
 option_edit = OptionMenu(edit_input, clicked, *Spending_categories)
@@ -928,12 +930,12 @@ entry_15_budget.grid(row=13, column=0)
 
 var_1_budget = StringVar()
 entry_1_budget = Entry(budget, textvariable=var_1_budget, state='readonly')
-var_1_budget.set('Expenses per month')
+var_1_budget.set('Monthly Budget')
 entry_1_budget.grid(row=1, column=1)
 
 var_12_budget = StringVar()
 entry_12_budget = Entry(budget, textvariable=var_12_budget, state='readonly')
-var_12_budget.set('Target Spending')
+var_12_budget.set('Monthly Target Spending')
 entry_12_budget.grid(row=1, column=2)
 
 var_13_budget = StringVar()
