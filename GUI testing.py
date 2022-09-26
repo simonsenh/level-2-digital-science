@@ -564,6 +564,7 @@ def calculate_budget():
     row_2_list = []
     total_spending_category = []
     counter_3 = 0
+    list_round = []
     while len(spending_ratios) != counter_3:
         total_spending_category.append([spending_ratios[counter_3][0], 0])
         counter_3 += 1
@@ -590,18 +591,23 @@ def calculate_budget():
         total_amount += amount_per_month
         total_amount = round(total_amount, ndigits=2)
         counter_3 += 1
+    counter_3 = 0
+    while len(list_round) < 10:
+        total_spending_category[counter_3][1] = round(total_spending_category[counter_3][1], ndigits=2)
+        list_round.append(total_spending_category[counter_3][1])
+        counter_3 += 1
     # row one
     income_monthly_label.insert(END, total_spending_category[10][1])
-    housing_label.insert(END, total_spending_category[0][1])
-    transport_label.insert(END, total_spending_category[1][1])
-    food_label.insert(END, total_spending_category[2][1])
-    utilities_label.insert(END, total_spending_category[3][1])
-    insurance_label.insert(END, total_spending_category[4][1])
-    medical_label.insert(END, total_spending_category[5][1])
-    personal_spending_label.insert(END, total_spending_category[6][1])
-    recreation_label.insert(END, total_spending_category[7][1])
-    miscellaneous_label.insert(END, total_spending_category[8][1])
-    savings_debt_label.insert(END, total_spending_category[9][1])
+    housing_label.insert(END, list_round[0])
+    transport_label.insert(END, list_round[1])
+    food_label.insert(END, list_round[2])
+    utilities_label.insert(END, list_round[3])
+    insurance_label.insert(END, list_round[4])
+    medical_label.insert(END, list_round[5])
+    personal_spending_label.insert(END, list_round[6])
+    recreation_label.insert(END, list_round[7])
+    miscellaneous_label.insert(END, list_round[8])
+    savings_debt_label.insert(END, list_round[9])
     total_budget_label.insert(END, total_amount)
     # row two
     counter_3 = 0
