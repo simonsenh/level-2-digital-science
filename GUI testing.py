@@ -571,11 +571,11 @@ def calculate_budget():
     total_spending_category.append(["Income", 0])
     counter_3 = 1
     while len(calculate[which_user][4]) > counter_3:
-        if calculate[which_user][5][counter_3] == "Days":
+        if calculate[which_user][5][counter_3] == "Daily":
             amount_per_month = 365 / 12
-        elif calculate[which_user][5][counter_3] == "Weeks":
+        elif calculate[which_user][5][counter_3] == "Weekly":
             amount_per_month = 52 / 12
-        elif calculate[which_user][5][counter_3] == "Years":
+        elif calculate[which_user][5][counter_3] == "Yearly":
             amount_per_month = 1 / 12
         else:
             amount_per_month = 1
