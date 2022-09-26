@@ -38,7 +38,7 @@ vari_7 = [["watch out for housing which is better in the area in which they want
           ["It is important to spend money to visit new places and enjoy yourself", "Instead of making a trip whenever you think of something you need, make a list and only go out when this is necessary."],
           ["Consider buying fresh organic produce to improve the environment and your nutrition", "Growing your own vegetables is a good way of saving money and provide great satisfaction."],
           ["Consider moving to green energy supplier to support the environment", "get quotes from the utility suppliers in your area and change to the one that offers the best deal"],
-          ["Insurance is important to prevent a financial catastrophe", "Look for better deals that might ofer you less"],
+          ["Insurance is important to prevent a financial catastrophe", "Look for better deals that might offer you less"],
           ["you are financially able to spend money on healthcare", "Health problems cannot be avoid"],
           ["Its important to spend money on clothing to keep yourself warm and dry throughout the year", "Buying second-hand can save a lot of money, remember to always have money for needs"],
           ["Its important to spend some money to enjoy yourself", "Do I really need it or can I get by without it?"],
@@ -104,7 +104,7 @@ def go_login(frame):
 
 
 # Display error message
-def error_message(error_message_message):
+def error_message(error_message_2):
     global error
     try:
         error.deiconify()
@@ -112,7 +112,7 @@ def error_message(error_message_message):
         error = Toplevel()
     error_frame = ttk.Frame(error)
     error_frame.grid(row=0, column=0)
-    error_label_error = ttk.Label(error_frame, text=error_message_message, foreground="red")
+    error_label_error = ttk.Label(error_frame, text=error_message_2, foreground="red")
     error_label_error.grid(row=0, column=0)
 
 
@@ -212,7 +212,7 @@ def signup_func():
     signup.grid(row=0, column=0)
 
 
-# Check if the new username and passwords are up to standard then add them to data base
+# Check if the new username and passwords are up to standard then add them to database
 def signup_button_func():
     global username, password, password2
     username_passwords = pickle.load(open("names.dat", "rb"))
@@ -273,7 +273,7 @@ def budget_func():
     calculate_budget()
 
 
-# Display a seperate window with a tip
+# Display a separate window with a tip
 def tips_func():
     global tips_window
     try:
@@ -392,33 +392,32 @@ def delete_row():
     list_1.pop(0)
     list_2 = []
     list_3 = []
-    var_1 = 0
-    var_2 = 0
-    while var_2 < len(list_1):
+    va_1 = 0
+    va_2 = 0
+    while va_2 < len(list_1):
         n = 0
         x = max(list_1)
         while n < len(list_1):
             if x == list_1[n]:
                 list_2.insert(0, n)
-                var_1 = n
+                va_1 = n
             n += 1
-        list_1[var_1] = 0
-        var_2 += 1
-    var_2 = 0
-    while var_2 < len(list_2):
+        list_1[va_1] = 0
+        va_2 += 1
+    va_2 = 0
+    while va_2 < len(list_2):
         list_3.append(0)
-        var_2 += 1
-    var_1 = 0
-    var_2 = 0
-    while var_2 < len(list_2):
-        list_3[list_2[var_2]] = var_2 + 1
-        var_2 += 1
+        va_2 += 1
+    va_2 = 0
+    while va_2 < len(list_2):
+        list_3[list_2[va_2]] = va_2 + 1
+        va_2 += 1
     list_3.insert(0, "row")
     delete_variables[which_user][1] = list_3
     pickle.dump(delete_variables, open("values.dat", "wb"))
 
 
-# Go to edit page if the correct amount of boxes have been ticked
+# Go to edit page if the correct amount of boxes has been ticked
 def edit_row():
     global num_rows, selected_row
     num_rows = 0
@@ -559,7 +558,6 @@ def calculate_budget():
     spending_ratios = pickle.load(open("ratio.dat", "rb"))
     which_user = which_user_func()
     total_amount = 0
-    total_amount_2 = 0
     total_amount_3 = 0
     row_2_list = []
     total_spending_category = []
@@ -612,42 +610,55 @@ def calculate_budget():
     # row two
     counter_3 = 0
     while counter_3 < 10:
-        total_amount_2 += total_spending_category[10][1] * spending_ratios[counter_3][1]
         y = -(total_spending_category[10][1] * spending_ratios[counter_3][1])
         y = round(y, ndigits=2)
         row_2_list.append(y)
         counter_3 += 1
-    total_amount_2 = round(total_amount_2, ndigits=2)
+    counter_3 = 0
+    list_round = []
+    while len(list_round) < 10:
+        row_2_list[counter_3] = round(row_2_list[counter_3], ndigits=2)
+        list_round.append(row_2_list[counter_3])
+        counter_3 += 1
     income_monthly_label_2.insert(END, total_spending_category[10][1])
-    housing_label_2.insert(END, row_2_list[0])
-    transport_label_2.insert(END, row_2_list[1])
-    food_label_2.insert(END, row_2_list[2])
-    utilities_label_2.insert(END, row_2_list[3])
-    insurance_label_2.insert(END, row_2_list[4])
-    medical_label_2.insert(END, row_2_list[5])
-    personal_spending_label_2.insert(END, row_2_list[6])
-    recreation_label_2.insert(END, row_2_list[7])
-    miscellaneous_label_2.insert(END, row_2_list[8])
-    savings_debt_label_2.insert(END, row_2_list[9])
+    housing_label_2.insert(END, list_round[0])
+    transport_label_2.insert(END, list_round[1])
+    food_label_2.insert(END, list_round[2])
+    utilities_label_2.insert(END, list_round[3])
+    insurance_label_2.insert(END, list_round[4])
+    medical_label_2.insert(END, list_round[5])
+    personal_spending_label_2.insert(END, list_round[6])
+    recreation_label_2.insert(END, list_round[7])
+    miscellaneous_label_2.insert(END, list_round[8])
+    savings_debt_label_2.insert(END, list_round[9])
     total_budget_label_2.insert(END, -total_spending_category[10][1])
     # row three
     counter_3 = 0
     while counter_3 < 10:
         total_amount_3 += (row_2_list[counter_3] - total_spending_category[counter_3][1])
         counter_3 += 1
+    counter_3 = 0
+    list_round = []
+    while len(list_round) < 10:
+        x = row_2_list[counter_3] - total_spending_category[counter_3][1]
+        x = round(x, ndigits=2)
+        list_round.append(x)
+        counter_3 += 1
     total_amount_3 = round(total_amount_3, ndigits=2)
     income_monthly_label_3.insert(END, total_spending_category[10][1])
-    housing_label_3.insert(END, row_2_list[0] - total_spending_category[0][1])
-    transport_label_3.insert(END, row_2_list[1] - total_spending_category[1][1])
-    food_label_3.insert(END, row_2_list[2] - total_spending_category[2][1])
-    utilities_label_3.insert(END, row_2_list[3] - total_spending_category[3][1])
-    insurance_label_3.insert(END, row_2_list[4] - total_spending_category[4][1])
-    medical_label_3.insert(END, (row_2_list[5] - total_spending_category[5][1]))
-    personal_spending_label_3.insert(END, row_2_list[6] - total_spending_category[6][1])
-    recreation_label_3.insert(END, row_2_list[7] - total_spending_category[7][1])
-    miscellaneous_label_3.insert(END, row_2_list[8] - total_spending_category[8][1])
-    savings_debt_label_3.insert(END, row_2_list[9] - total_spending_category[9][1])
+    housing_label_3.insert(END, list_round[0])
+    transport_label_3.insert(END, list_round[1])
+    food_label_3.insert(END, list_round[2])
+    utilities_label_3.insert(END, list_round[3])
+    insurance_label_3.insert(END, list_round[4])
+    medical_label_3.insert(END, (list_round[5]))
+    personal_spending_label_3.insert(END, list_round[6])
+    recreation_label_3.insert(END, list_round[7])
+    miscellaneous_label_3.insert(END, list_round[8])
+    savings_debt_label_3.insert(END, list_round[9])
     total_budget_label_3.insert(END, total_amount_3)
+    tip_row_func_1()
+    tips_window.withdraw()
 
 
 # Functions for tips
