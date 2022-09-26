@@ -33,7 +33,7 @@ vari_2 = []
 vari_3 = [["row"], ["category"], ["type"], ["amount"], ["time"]]
 vari_6 = [["Housing", 0.196], ["Transportation", 0.17], ["Food", 0.074], ["Utilities", 0.137], ["Insurance", 0.026],
           ["Medical & Healthcare", 0.026],
-          ["Personal Spending", 0.045], ["Recreation & Entertainment", 0.51], ["Miscellaneous", 0.05], ["Saving, Investing, & Debt Payments", 0.225]]
+          ["Personal Spending", 0.045], ["Recreation & Entertainment", 0.051], ["Miscellaneous", 0.05], ["Saving, Investing, & Debt Payments", 0.225]]
 vari_7 = [["watch out for housing which is better in the area in which they want to live", "watch out for housing which is cheaper in the area in which they want to live"],
           ["It is important to spend money to visit new places and enjoy yourself", "Instead of making a trip whenever you think of something you need, make a list and only go out when this is necessary."],
           ["Consider buying fresh organic produce to improve the environment and your nutrition", "Growing your own vegetables is a good way of saving money and provide great satisfaction."],
@@ -337,9 +337,9 @@ def delete_row():
         except:
             loop = 1
     counter_3 = 1
-    position = 0
     a = len(delete_variables[which_user][1])
     while counter_3 < a:
+        position = 0
         b = delete_variables[which_user][1][counter_3]
         c = len(selected_pop)
         counter_4 = 0
@@ -359,6 +359,33 @@ def delete_row():
             counter_3 += 1
         else:
             a = len(delete_variables[which_user][1])
+    list_1 = delete_variables[which_user][1]
+    list_1.pop(0)
+    list_2 = []
+    list_3 = []
+    var_1 = 0
+    var_2 = 0
+    while var_2 < len(list_1):
+        n = 0
+        x = max(list_1)
+        while n < len(list_1):
+            if x == list_1[n]:
+                list_2.insert(0, n)
+                var_1 = n
+            n += 1
+        list_1[var_1] = 0
+        var_2 += 1
+    var_2 = 0
+    while var_2 < len(list_2):
+        list_3.append(0)
+        var_2 += 1
+    var_1 = 0
+    var_2 = 0
+    while var_2 < len(list_2):
+        list_3[list_2[var_2]] = var_2 + 1
+        var_2 += 1
+    list_3.insert(0, "row")
+    delete_variables[which_user][1] = list_3
     pickle.dump(delete_variables, open("values.dat", "wb"))
 
 
@@ -567,7 +594,7 @@ def calculate_budget():
     personal_spending_label_2.insert(END, row_2_list[7])
     recreation_label_2.insert(END, row_2_list[8])
     miscellaneous_label_2.insert(END, row_2_list[9])
-    total_budget_label_2.insert(END, total_amount_2)
+    total_budget_label_2.insert(END, total_spending_category[10][1])
     # row three
     counter_3 = 0
     while counter_3 < 10:
@@ -585,7 +612,7 @@ def calculate_budget():
     personal_spending_label_3.insert(END, row_2_list[7] - total_spending_category[7][1])
     recreation_label_3.insert(END, row_2_list[8] - total_spending_category[8][1])
     miscellaneous_label_3.insert(END, row_2_list[9] - total_spending_category[9][1])
-    total_budget_label_3.insert(END, total_amount_3)
+    total_budget_label_3.insert(END, total_spending_category[10][1])
 
 
 # Functions for tips
