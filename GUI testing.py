@@ -44,7 +44,6 @@ vari_7 = [["watch out for housing which is better in the area in which they want
           ["Its important to spend some money to enjoy yourself", "Do I really need it or can I get by without it?"],
           ["You are free to spend money on your own things", "Try to think of something that you don't actually have to do"],
           ["Spending money on yourself now is important for your well being", "Savings are a crucial investment for your future and safety net in case things go wrong"]]
-# choose = 0
 choose = input("Do you want to reset files?")
 if choose == "yes":
     pickle.dump(vari_1, open("names.dat", "wb"))
@@ -52,7 +51,7 @@ if choose == "yes":
     pickle.dump(vari_6, open("ratio.dat", "wb"))
     pickle.dump(vari_7, open("tips.dat", "wb"))
 
-# set pickle titles
+# test pickle
 try:
     vari_4 = pickle.load(open("names.dat", "rb"))
 except:
@@ -88,11 +87,13 @@ def go_main_menu(frame):
     main_menu.grid(row=0, column=0)
 
 
+# Go to the login page
 def go_login(frame):
     frame.grid_forget()
     login.grid(row=0, column=0)
 
 
+# Go to input page and display all rows
 def go_input_page(frame):
     global counter, do_it
     do_it = 0
@@ -126,6 +127,7 @@ def go_input_page(frame):
     input_page.grid(row=0, column=0)
 
 
+# check if password and username is correct and then go to main menu
 def login_func():
     global current_username
     username_tests = username_login_entry.get()
@@ -180,12 +182,14 @@ def login_func():
         main_menu.grid(row=0, column=0)
 
 
+# Go to sign up page
 def signup_func():
     global username_signup_entry, password_signup_entry, password_signup_entry_check
     login.grid_forget()
     signup.grid(row=0, column=0)
 
 
+# Check if the new username and passwords are up to standard then add them to data base
 def signup_button_func():
     global username, password, password2
     username_passwords = pickle.load(open("names.dat", "rb"))
@@ -241,11 +245,13 @@ def signup_button_func():
         error_message_signup.config(text="PASSWORD OR USERNAME HAS BEEN TAKEN!")
 
 
+# Go to budget page
 def budget_func():
     budget.grid(row=0, column=0)
     calculate_budget()
 
 
+# Display a seperate window with a tip
 def tips_func():
     # set up window
     tips_window = Tk()
@@ -280,7 +286,7 @@ def tips_func():
     tips_page_label.config(text=x)
 
 
-
+# Add a row to the input page and go to edit that row
 def add_row():
     global counter, counter_2, selected_row, do_it
     counter += 1
@@ -305,6 +311,7 @@ def add_row():
     do_it = 0
 
 
+# Delete a row and the data stored in that row
 def delete_row():
     global counter
     selected = []
@@ -355,6 +362,7 @@ def delete_row():
     pickle.dump(delete_variables, open("values.dat", "wb"))
 
 
+# Go to edit page if the correct amount of boxes have been ticked
 def edit_row():
     global num_rows, selected_row
     num_rows = 0
@@ -383,6 +391,7 @@ def edit_row():
         edit_input.grid(row=0, column=0)
 
 
+# Save inputted data to file if the data is valid
 def edit_func():
     global times
     values_load = pickle.load(open("values.dat", "rb"))
@@ -391,13 +400,23 @@ def edit_func():
     amount = entry_edit_2.get()
     time_category = click.get()
     which_user = which_user_func()
+    check = 0
     try:
         amount = float(amount)
     except:
         amount = "s"
     if amount == "s":
         error_message_edit.config(text="AMOUNT MUST BE A NUMBER!")
+        check = 1
+    elif category == "Income":
+        if amount < 0:
+            check = 1
+            error_message_edit.config(text="AMOUNT MUST BE POSITIVE!")
     else:
+        if amount > 0:
+            check = 1
+            error_message_edit.config(text="AMOUNT MUST BE NEGATIVE!")
+    if check == 0:
         counter_3 = 1
         insert = 0
         while counter_3 < len(values_load[which_user][1]):
@@ -420,6 +439,7 @@ def edit_func():
         go_input_page(edit_input)
 
 
+# Set the text of each box in the input page based on data in the file
 def set_text():
     global counter
     values_text = pickle.load(open("values.dat", "rb"))
@@ -440,6 +460,7 @@ def set_text():
     return texts
 
 
+# use financial information in the file to calculate a budget for the user
 def calculate_budget():
     global row_2_list, total_spending_category
     income_monthly_label.delete(0, END)
@@ -567,6 +588,7 @@ def calculate_budget():
     total_budget_label_3.insert(END, total_amount_3)
 
 
+# Functions for tips
 def tip_row_func_1():
     global tip_row
     tip_row = 1
@@ -627,6 +649,7 @@ def tip_row_func_10():
     tips_func()
 
 
+# Function that finds the current user
 def which_user_func():
     which_user_load = pickle.load(open("values.dat", "rb"))
     loop = 0
@@ -641,6 +664,7 @@ def which_user_func():
     return which_user
 
 
+# Function that displays in a seperate window instruction for how to use the applicattion
 def how_to():
     how_to_window = Tk()
     how_to_window.title("H.S.Budget")
@@ -1033,6 +1057,7 @@ tip_button_budget_9.grid(row=11, column=4)
 tip_button_budget_10 = ttk.Button(budget, text="show tip", width=10, command=lambda: tip_row_func_10())
 tip_button_budget_10.grid(row=12, column=4)
 
+# run main loop
 main.mainloop()
 
 # load file
