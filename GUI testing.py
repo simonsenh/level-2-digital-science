@@ -21,35 +21,12 @@ tip_row = 0
 Spending_categories = ["Housing", "Transportation", "Food", "Utilities", "Insurance", "Medical & Healthcare",
                        "Saving, Investing, & Debt Payments", "Personal Spending", "Recreation & Entertainment",
                        "Miscellaneous", "Income"]
+vari_3 = [["row"], ["category"], ["type"], ["amount"], ["time"]]
 clicked = StringVar()
 clicked.set("Housing")
 time_types = ["Daily", "Weekly", "Monthly", "Yearly"]
 click = StringVar()
 click.set("Days")
-
-# manually clear pickle
-vari_1 = [["usernames"], ["passwords"]]
-vari_2 = []
-vari_3 = [["row"], ["category"], ["type"], ["amount"], ["time"]]
-vari_6 = [["Housing", 0.196], ["Transportation", 0.17], ["Food", 0.074], ["Utilities", 0.137], ["Insurance", 0.026],
-          ["Medical & Healthcare", 0.026],
-          ["Personal Spending", 0.045], ["Recreation & Entertainment", 0.051], ["Miscellaneous", 0.05], ["Saving, Investing, & Debt Payments", 0.225]]
-vari_7 = [["watch out for housing which is better in the area in which they want to live", "watch out for housing which is cheaper in the area in which they want to live"],
-          ["It is important to spend money to visit new places and enjoy yourself", "Instead of making a trip whenever you think of something you need, make a list and only go out when this is necessary."],
-          ["Consider buying fresh organic produce to improve the environment and your nutrition", "Growing your own vegetables is a good way of saving money and provide great satisfaction."],
-          ["Consider moving to green energy supplier to support the environment", "get quotes from the utility suppliers in your area and change to the one that offers the best deal"],
-          ["Insurance is important to prevent a financial catastrophe", "Look for better deals that might offer you less"],
-          ["you are financially able to spend money on healthcare", "Health problems cannot be avoid"],
-          ["Its important to spend money on clothing to keep yourself warm and dry throughout the year", "Buying second-hand can save a lot of money, remember to always have money for needs"],
-          ["Its important to spend some money to enjoy yourself", "Do I really need it or can I get by without it?"],
-          ["You are free to spend money on your own things", "Try to think of something that you don't actually have to do"],
-          ["Spending money on yourself now is important for your well being", "Savings are a crucial investment for your future and safety net in case things go wrong"]]
-choose = input("Do you want to reset files?")
-if choose == "yes":
-    pickle.dump(vari_1, open("names.dat", "wb"))
-    pickle.dump(vari_2, open("values.dat", "wb"))
-    pickle.dump(vari_6, open("ratio.dat", "wb"))
-    pickle.dump(vari_7, open("tips.dat", "wb"))
 
 # test pickle
 try:
@@ -91,6 +68,38 @@ budget.grid(row=0, column=0)
 budget.grid_forget()
 
 
+# reset the files of the code if input is yes or clear all
+def reset_files(choose_2):
+    global vari_1, vari_2, vari_6, vari_7
+    # set hard code for reset
+    vari_1 = [["usernames"], ["passwords"]]
+    vari_2 = []
+    vari_6 = [["Housing", 0.196], ["Transportation", 0.17], ["Food", 0.074], ["Utilities", 0.137], ["Insurance", 0.026],
+              ["Medical & Healthcare", 0.026],
+              ["Personal Spending", 0.045], ["Recreation & Entertainment", 0.051], ["Miscellaneous", 0.05], ["Saving, Investing, & Debt Payments", 0.225]]
+    vari_7 = [["watch out for housing which is better in the area in which they want to live", "watch out for housing which is cheaper in the area in which they want to live"],
+              ["It is important to spend money to visit new places and enjoy yourself", "Instead of making a trip whenever you think of something you need, make a list and only go out when this is necessary."],
+              ["Consider buying fresh organic produce to improve the environment and your nutrition", "Growing your own vegetables is a good way of saving money and provide great satisfaction."],
+              ["Consider moving to green energy supplier to support the environment", "get quotes from the utility suppliers in your area and change to the one that offers the best deal"],
+              ["Insurance is important to prevent a financial catastrophe", "Look for better deals that might offer you less"],
+              ["you are financially able to spend money on healthcare", "Health problems cannot be avoid"],
+              ["Its important to spend money on clothing to keep yourself warm and dry throughout the year", "Buying second-hand can save a lot of money, remember to always have money for needs"],
+              ["Its important to spend some money to enjoy yourself", "Do I really need it or can I get by without it?"],
+              ["You are free to spend money on your own things", "Try to think of something that you don't actually have to do"],
+              ["Spending money on yourself now is important for your well being", "Savings are a crucial investment for your future and safety net in case things go wrong"]]
+    # add the variables to the files if the input is yes or clear all, if clear all reset files to nothing
+    if choose_2 == "yes":
+        pickle.dump(vari_1, open("names.dat", "wb"))
+        pickle.dump(vari_2, open("values.dat", "wb"))
+        pickle.dump(vari_6, open("ratio.dat", "wb"))
+        pickle.dump(vari_7, open("tips.dat", "wb"))
+    elif choose_2 == "clear all":
+        pickle.dump(vari_2, open("names.dat", "wb"))
+        pickle.dump(vari_2, open("values.dat", "wb"))
+        pickle.dump(vari_2, open("ratio.dat", "wb"))
+        pickle.dump(vari_2, open("tips.dat", "wb"))
+
+
 # Go to main menu
 def go_main_menu(frame):
     frame.grid_forget()
@@ -120,6 +129,7 @@ def error_message(error_message_2):
 def go_input_page(frame):
     global counter, do_it
     do_it = 0
+    # delete all the widgets
     for row_s, row in reversed(list(enumerate(rows))):
         if row[0].val.get() == 1 or row[0].val.get() == 0:
             for integer in row:
@@ -133,6 +143,7 @@ def go_input_page(frame):
     counter_3 = 1
     length = len(values_go[which_user][1])
     lists = values_go[which_user][1]
+    # add all rows to the highest row that has been inputted
     if length > 1:
         while loop == 0:
             v = lists[counter_3]
@@ -162,6 +173,7 @@ def login_func():
     valid_2 = 0
     check_user = 0
     check_pass = 0
+    # test if the inputed username is valid and set a variable based on wether it is or isnt
     while found == 0:
         try:
             if username_tests == username_passwords[0][counter_3]:
@@ -177,6 +189,7 @@ def login_func():
         valid_2 = 1
     counter_3 = 0
     found = 0
+    # test if the inputed password is valid and set a variable based on wether it is or isnt
     while found == 0:
         try:
             if password_test == username_passwords[1][counter_3]:
@@ -190,11 +203,13 @@ def login_func():
         valid += 1
     else:
         valid_2 = 2
+    # set value if username and password are for the same account
     if valid == 2:
         if check_pass == check_user:
             valid += 1
         else:
             valid_2 = 2
+    # display error messages or go to main menu based on data from above
     if valid_2 == 1:
         error_message("WRONG USERNAME!")
     elif valid_2 == 2:
@@ -215,6 +230,7 @@ def signup_func():
 # Check if the new username and passwords are up to standard then add them to database
 def signup_button_func():
     global username, password, password2
+    # set variables
     username_passwords = pickle.load(open("names.dat", "rb"))
     username = username_signup_entry.get()
     password = password_signup_entry.get()
@@ -222,6 +238,7 @@ def signup_button_func():
     loop = 0
     counter_3 = 1
     valid = 0
+    # see if username has been used before
     while loop == 0:
         try:
             if username_passwords[0][counter_3] == username:
@@ -233,6 +250,7 @@ def signup_button_func():
             loop = 1
     loop = 0
     counter_3 = 1
+    # check if password has been taken
     while loop == 0:
         try:
             if username_passwords[1][counter_3] == password:
@@ -242,6 +260,7 @@ def signup_button_func():
         except:
             valid += 1
             loop = 1
+    # if password and username have not been taken check if they are valid usernames that will be secure
     if valid == 2:
         if password != password2:
             error_message("PASSWORDS NEED TO MATCH!")
@@ -254,6 +273,7 @@ def signup_button_func():
         elif len(password) > 20:
             error_message("PASSWORD NEEDS TO BE LESS THAN TWENTY CHARACTERS!(security)")
         else:
+            # username and password is valid so save username and password to the name and password file
             username_passwords[0].append(username)
             username_passwords[1].append(password)
             pickle.dump(username_passwords, open("names.dat", "wb"))
@@ -293,11 +313,11 @@ def tips_func():
     tips_page_label.grid(row=0, column=0)
     tips_page_label_2 = ttk.Label(tips, text="")
     tips_page_label_2.grid(row=1, column=0)
-    # run function
     tips_load = pickle.load(open("tips.dat", "rb"))
     tips_category_load = pickle.load(open("ratio.dat", "rb"))
     counter_3 = 0
     c = "                                                                                                             "
+    # display text based off wether the inputted data makes the account an over under or netral category
     while counter_3 < 10:
         if tip_row == counter_3 + 1:
             if 0 < row_2_list[counter_3] - total_spending_category[counter_3][1]:
@@ -326,6 +346,7 @@ def add_row():
     items.append(check)
     check.grid(row=counter, column=0)
     counter_2 = 0
+    # add an endtry widget for each column
     while counter_2 != 4:
         entry = Entry(input_page)
         entry.insert(END, set_text())
@@ -333,6 +354,7 @@ def add_row():
         entry.grid(row=counter, column=(counter_2 + 1))
         counter_2 += 1
     rows.append(items)
+    # if not opening the input page go to the edit page editting the newly created row
     if do_it == 0:
         selected_row = counter - 2
         input_page.grid_forget()
@@ -346,6 +368,7 @@ def delete_row():
     selected = []
     selected_pop = []
     delete_variables = pickle.load(open("values.dat", "rb"))
+    # destroy all widgets in one row and set a list of the selcted rows
     for row_s, row in reversed(list(enumerate(rows))):
         if row[0].val.get() == 1:
             selected.insert(0, 1)
@@ -358,6 +381,7 @@ def delete_row():
     which_user = which_user_func()
     loop = 0
     counter_3 = 0
+    # create selcted pop a list of the possitional number of the rows based off binary list
     while loop == 0:
         try:
             if selected[counter_3] == 1:
@@ -367,6 +391,7 @@ def delete_row():
             loop = 1
     counter_3 = 1
     a = len(delete_variables[which_user][1])
+    #
     while counter_3 < a:
         position = 0
         b = delete_variables[which_user][1][counter_3]
@@ -454,6 +479,7 @@ def edit_func():
     time_category = click.get()
     which_user = which_user_func()
     check = 0
+    #
     try:
         amount = float(amount)
     except:
@@ -1107,15 +1133,37 @@ tip_button_budget_9.grid(row=11, column=4)
 tip_button_budget_10 = ttk.Button(budget, text="show tip", width=10, command=lambda: tip_row_func_10())
 tip_button_budget_10.grid(row=12, column=4)
 
+# check files
+try:
+    reset = 0
+    a1 = pickle.load(open("names.dat", "rb"))
+    a2 = pickle.load(open("values.dat", "rb"))
+    a3 = pickle.load(open("ratio.dat", "rb"))
+    a4 = pickle.load(open("tips.dat", "rb"))
+    if len(a1) < 2:
+        reset = 1
+    elif len(a1) < 10:
+        reset = 1
+    elif len(a1) < 20:
+        reset = 1
+    if reset == 1:
+        choose = "yes"
+        reset_files(choose)
+except:
+    choose = "yes"
+    reset_files(choose)
 # run main loop
 main.mainloop()
 
 # load file
-yes_no = input("do you want to load file?")
+choose = input("Do you want to reset files?(yes), (clear all)")
+reset_files(choose)
+yes_no = input("do you want to load file?(yes)")
 if yes_no == "yes":
     show1 = pickle.load(open("names.dat", "rb"))
     show2 = pickle.load(open("values.dat", "rb"))
     show3 = pickle.load(open("ratio.dat", "rb"))
-    print(show1, show2, show3)
+    show4 = pickle.load(open("tips.dat", "rb"))
+    print(show1, show2, show3, show4)
 else:
     print("ok")
