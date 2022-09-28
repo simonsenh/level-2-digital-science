@@ -391,7 +391,7 @@ def delete_row():
             loop = 1
     counter_3 = 1
     a = len(delete_variables[which_user][1])
-    #
+    # delete all saved data in rows
     while counter_3 < a:
         position = 0
         b = delete_variables[which_user][1][counter_3]
@@ -419,6 +419,7 @@ def delete_row():
     list_3 = []
     va_1 = 0
     va_2 = 0
+    # change all row values to be 1 2 3 not 1 4 5
     while va_2 < len(list_1):
         n = 0
         x = max(list_1)
@@ -448,6 +449,7 @@ def edit_row():
     num_rows = 0
     selected = []
     counter_3 = 0
+    # find the number of rows that have been selected
     for row_s, row in reversed(list(enumerate(rows))):
         if row[0].val.get() == 1:
             selected.insert(0, 1)
@@ -456,6 +458,7 @@ def edit_row():
         else:
             selected.insert(0, 0)
     num_rows = round(num_rows)
+    # check if that number is one, if not display approprate error message
     while counter_3 < len(selected):
         if selected[counter_3] == 1:
             selected_row = counter_3 + 1
@@ -479,7 +482,7 @@ def edit_func():
     time_category = click.get()
     which_user = which_user_func()
     check = 0
-    #
+    # check if the amount is a number and is possitive or negative based of category and display appropriate error message
     try:
         amount = float(amount)
     except:
@@ -495,6 +498,7 @@ def edit_func():
         if amount > 0:
             check = 1
             error_message("AMOUNT MUST BE NEGATIVE!")
+    # add information to the file or replace information if the row values are the same
     if check == 0:
         counter_3 = 1
         insert = 0
@@ -528,6 +532,7 @@ def set_text():
     loop = 0
     texts = 0
     counter_3 = 1
+    # set the text that will be displayed bassed on the data saved and the possition of the widget
     while loop == 0:
         try:
             if values_text[which_user][1][counter_3] == counter - 2:
@@ -544,6 +549,7 @@ def set_text():
 # use financial information in the file to calculate a budget for the user
 def calculate_budget():
     global row_2_list, total_spending_category
+    #reset all widgets
     income_monthly_label.delete(0, END)
     housing_label.delete(0, END)
     transport_label.delete(0, END)
@@ -589,11 +595,13 @@ def calculate_budget():
     total_spending_category = []
     counter_3 = 0
     list_round = []
+    # create a list of all the totals
     while len(spending_ratios) != counter_3:
         total_spending_category.append([spending_ratios[counter_3][0], 0])
         counter_3 += 1
     total_spending_category.append(["Income", 0])
     counter_3 = 1
+    # calculate the mounthly amount of each category
     while len(calculate[which_user][4]) > counter_3:
         if calculate[which_user][5][counter_3] == "Daily":
             amount_per_month = 365 / 12
@@ -606,6 +614,7 @@ def calculate_budget():
         amount_per_month = calculate[which_user][4][counter_3] * amount_per_month
         amount_per_month = round(amount_per_month, ndigits=2)
         counter_4 = 0
+        # total each category
         while counter_4 < 11:
             if calculate[which_user][2][counter_3] == total_spending_category[counter_4][0]:
                 y = total_spending_category[counter_4][1]
@@ -754,6 +763,7 @@ def which_user_func():
     loop = 0
     counter_3 = 0
     which_user = 0
+    # loop through each file until find the current user
     while loop == 0:
         if which_user_load[counter_3][0] == current_username:
             which_user = counter_3
@@ -1155,7 +1165,7 @@ except:
 # run main loop
 main.mainloop()
 
-# load file
+# load file (admin mode)
 choose = input("Do you want to reset files?(yes), (clear all)")
 reset_files(choose)
 yes_no = input("do you want to load file?(yes)")
