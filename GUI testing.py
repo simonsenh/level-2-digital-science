@@ -2,41 +2,40 @@ from tkinter import *
 from tkinter import ttk
 import pickle
 
+# set the main window
 main = Tk()
 main.title("Henry Simonsen Budgeting Software")
 main.geometry('700x500')
 
 # variables
+# temporary password and username variables for inputing into a file
 username = 0
 password = 0
 username2 = 0
 password2 = 0
 password3 = 0
-counter = 2
-selected_row = 0
 username_test = 0
+# global counters that are used to keep track of rows and over things
+counter = 2
 counter_2 = 0
+# global variables that relate to keeping track of the state of rows
+selected_row = 0
 rows = []
 tip_row = 0
+# a list of the spending categorys that the user can select
 Spending_categories = ["Housing", "Transportation", "Food", "Utilities", "Insurance", "Medical & Healthcare",
                        "Saving, Investing, & Debt Payments", "Personal Spending", "Recreation & Entertainment",
                        "Miscellaneous", "Income"]
+# a list that will be added to the values when a new account is added
 vari_3 = [["row"], ["category"], ["type"], ["amount"], ["time"]]
+# variables for the dropdown for categorys
 clicked = StringVar()
 clicked.set("Housing")
+# a list of the time categorys a user cn select
 time_types = ["Daily", "Weekly", "Monthly", "Yearly"]
+# variables for the dropdown for time categorys
 click = StringVar()
 click.set("Days")
-
-# test pickle
-try:
-    vari_4 = pickle.load(open("names.dat", "rb"))
-except:
-    print("error with names")
-try:
-    vari_5 = pickle.load(open("values.dat", "rb"))
-except:
-    print("error with values")
 
 # Set up error window
 error = Toplevel()
@@ -49,20 +48,26 @@ tips_window.title("TIP")
 tips_window.withdraw()
 
 # Frames
+# login frame, display it first, for login in to a specific account
 login = ttk.Frame(main)
 login.grid(row=0, column=0)
+# signup frame for creating a new account
 signup = ttk.Frame(main)
 signup.grid(row=0, column=0)
 signup.grid_forget()
+# for switching between the budget and the input page as well as displaying important how to information
 main_menu = ttk.Frame(main)
 main_menu.grid(row=0, column=0)
 main_menu.grid_forget()
+# For inputting financial information that will be budgeted
 input_page = ttk.Frame(main)
 input_page.grid(row=0, column=0)
 input_page.grid_forget()
+# For editing a specific rows data
 edit_input = ttk.Frame(main)
 edit_input.grid(row=0, column=0)
 edit_input.grid_forget()
+# for calculating and displaying the budget for the user in a grid
 budget = ttk.Frame(main)
 budget.grid(row=0, column=0)
 budget.grid_forget()
@@ -72,11 +77,15 @@ budget.grid_forget()
 def reset_files(choose_2):
     global vari_1, vari_2, vari_6, vari_7
     # set hard code for reset
+    # reset for names
     vari_1 = [["usernames"], ["passwords"]]
+    # full reset
     vari_2 = []
+    # reset for ratios
     vari_6 = [["Housing", 0.196], ["Transportation", 0.17], ["Food", 0.074], ["Utilities", 0.137], ["Insurance", 0.026],
               ["Medical & Healthcare", 0.026],
               ["Personal Spending", 0.045], ["Recreation & Entertainment", 0.051], ["Miscellaneous", 0.05], ["Saving, Investing, & Debt Payments", 0.225]]
+    # reset for tips
     vari_7 = [["watch out for housing which is better in the area in which they want to live", "watch out for housing which is cheaper in the area in which they want to live"],
               ["It is important to spend money to visit new places and enjoy yourself", "Instead of making a trip whenever you think of something you need, make a list and only go out when this is necessary."],
               ["Consider buying fresh organic produce to improve the environment and your nutrition", "Growing your own vegetables is a good way of saving money and provide great satisfaction."],
@@ -115,6 +124,7 @@ def go_login(frame):
 # Display error message
 def error_message(error_message_2):
     global error
+    # check if error message is displayed and take steps to display
     try:
         error.deiconify()
     except:
@@ -136,6 +146,7 @@ def go_input_page(frame):
                 integer.destroy()
             rows.pop(row_s)
             counter -= 1
+    # set variables for calculations
     values_go = pickle.load(open("values.dat", "rb"))
     highest_row = 0
     which_user = which_user_func()
@@ -164,6 +175,7 @@ def go_input_page(frame):
 # check if password and username is correct and then go to main menu
 def login_func():
     global current_username
+    # set variables for calculations
     username_tests = username_login_entry.get()
     password_test = password_login_entry.get()
     username_passwords = pickle.load(open("names.dat", "rb"))
@@ -230,7 +242,7 @@ def signup_func():
 # Check if the new username and passwords are up to standard then add them to database
 def signup_button_func():
     global username, password, password2
-    # set variables
+    # set variables for calculations
     username_passwords = pickle.load(open("names.dat", "rb"))
     username = username_signup_entry.get()
     password = password_signup_entry.get()
@@ -296,10 +308,12 @@ def budget_func():
 # Display a separate window with a tip
 def tips_func():
     global tips_window
+    # check if tips menu is displayed and take nessasery steps to display
     try:
         tips_window.deiconify()
     except:
         tips_window = Toplevel()
+    # get rid of all other frames
     main_menu.grid_forget()
     login.grid_forget()
     signup.grid_forget()
@@ -313,6 +327,7 @@ def tips_func():
     tips_page_label.grid(row=0, column=0)
     tips_page_label_2 = ttk.Label(tips, text="")
     tips_page_label_2.grid(row=1, column=0)
+    # set variables for calculations
     tips_load = pickle.load(open("tips.dat", "rb"))
     tips_category_load = pickle.load(open("ratio.dat", "rb"))
     counter_3 = 0
@@ -338,6 +353,7 @@ def tips_func():
 # Add a row to the input page and go to edit that row
 def add_row():
     global counter, counter_2, selected_row, do_it
+    # set variables for calculations
     counter += 1
     items = []
     var = IntVar()
@@ -365,6 +381,7 @@ def add_row():
 # Delete a row and the data stored in that row
 def delete_row():
     global counter
+    # set variables for calculations
     selected = []
     selected_pop = []
     delete_variables = pickle.load(open("values.dat", "rb"))
@@ -378,6 +395,7 @@ def delete_row():
             counter -= 1
         else:
             selected.insert(0, 0)
+    # set variables for calculations
     which_user = which_user_func()
     loop = 0
     counter_3 = 0
@@ -413,13 +431,14 @@ def delete_row():
             counter_3 += 1
         else:
             a = len(delete_variables[which_user][1])
+    # set variables for calculations
     list_1 = delete_variables[which_user][1]
     list_1.pop(0)
     list_2 = []
     list_3 = []
     va_1 = 0
     va_2 = 0
-    # change all row values to be 1 2 3 not 1 4 5
+    # change all row values to be in accending order 1 3 2 not random 1 7 3
     while va_2 < len(list_1):
         n = 0
         x = max(list_1)
@@ -438,6 +457,7 @@ def delete_row():
     while va_2 < len(list_2):
         list_3[list_2[va_2]] = va_2 + 1
         va_2 += 1
+    # save data to file
     list_3.insert(0, "row")
     delete_variables[which_user][1] = list_3
     pickle.dump(delete_variables, open("values.dat", "wb"))
@@ -446,6 +466,7 @@ def delete_row():
 # Go to edit page if the correct amount of boxes has been ticked
 def edit_row():
     global num_rows, selected_row
+    # set variables for calculations
     num_rows = 0
     selected = []
     counter_3 = 0
@@ -475,6 +496,7 @@ def edit_row():
 # Save inputted data to file if the data is valid
 def edit_func():
     global times
+    # set variables for calculations
     values_load = pickle.load(open("values.dat", "rb"))
     category = clicked.get()
     types = entry_edit_1.get()
@@ -519,6 +541,7 @@ def edit_func():
             values_load[which_user][4][insert] = amount
             values_load[which_user][5][insert] = time_category
         pickle.dump(values_load, open("values.dat", "wb"))
+        # reset widgets
         entry_edit_1.delete(0, END)
         entry_edit_2.delete(0, END)
         go_input_page(edit_input)
@@ -527,6 +550,7 @@ def edit_func():
 # Set the text of each box in the input page based on data in the file
 def set_text():
     global counter
+    # set variables for calculations
     values_text = pickle.load(open("values.dat", "rb"))
     which_user = which_user_func()
     loop = 0
@@ -549,7 +573,7 @@ def set_text():
 # use financial information in the file to calculate a budget for the user
 def calculate_budget():
     global row_2_list, total_spending_category
-    #reset all widgets
+    # reset all widgets
     income_monthly_label.delete(0, END)
     housing_label.delete(0, END)
     transport_label.delete(0, END)
@@ -586,6 +610,7 @@ def calculate_budget():
     recreation_label_3.delete(0, END)
     miscellaneous_label_3.delete(0, END)
     total_budget_label_3.delete(0, END)
+    # set variables for calculations
     calculate = pickle.load(open("values.dat", "rb"))
     spending_ratios = pickle.load(open("ratio.dat", "rb"))
     which_user = which_user_func()
@@ -625,11 +650,12 @@ def calculate_budget():
         total_amount = round(total_amount, ndigits=2)
         counter_3 += 1
     counter_3 = 0
+    # round all numbers in column
     while len(list_round) < 10:
         total_spending_category[counter_3][1] = round(total_spending_category[counter_3][1], ndigits=2)
         list_round.append(total_spending_category[counter_3][1])
         counter_3 += 1
-    # row one
+    # set the variables for row one
     income_monthly_label.insert(END, total_spending_category[10][1])
     housing_label.insert(END, list_round[0])
     transport_label.insert(END, list_round[1])
@@ -642,13 +668,14 @@ def calculate_budget():
     miscellaneous_label.insert(END, list_round[8])
     savings_debt_label.insert(END, list_round[9])
     total_budget_label.insert(END, total_amount)
-    # row two
+    # set the variables for row two
     counter_3 = 0
     while counter_3 < 10:
         y = -(total_spending_category[10][1] * spending_ratios[counter_3][1])
         y = round(y, ndigits=2)
         row_2_list.append(y)
         counter_3 += 1
+    # round all numbers in column
     counter_3 = 0
     list_round = []
     while len(list_round) < 10:
@@ -667,13 +694,15 @@ def calculate_budget():
     miscellaneous_label_2.insert(END, list_round[8])
     savings_debt_label_2.insert(END, list_round[9])
     total_budget_label_2.insert(END, -total_spending_category[10][1])
-    # row three
+    # set the variables for row three
     counter_3 = 0
+    # calculate total
     while counter_3 < 10:
         total_amount_3 += (row_2_list[counter_3] - total_spending_category[counter_3][1])
         counter_3 += 1
     counter_3 = 0
     list_round = []
+    # round all numbers in column
     while len(list_round) < 10:
         x = row_2_list[counter_3] - total_spending_category[counter_3][1]
         x = round(x, ndigits=2)
@@ -759,6 +788,7 @@ def tip_row_func_10():
 
 # Function that finds the current user
 def which_user_func():
+    # set variables for calculations
     which_user_load = pickle.load(open("values.dat", "rb"))
     loop = 0
     counter_3 = 0
@@ -774,24 +804,25 @@ def which_user_func():
 
 
 # login page
+# title
 Login_title = ttk.Label(login, text="H.S.Budgeting")
 Login_title.grid(row=0, column=2)
-
+# company / application slogan
 Login_explain = ttk.Label(login, text="Managing your finances for your future")
 Login_explain.grid(row=1, column=2)
-
+# title labels
 username_label = ttk.Label(login, text="USERNAME")
 username_label.grid(row=3, column=0)
 
 password_label = ttk.Label(login, text="PASSWORD")
 password_label.grid(row=4, column=0)
-
+# entry labels
 username_login_entry = ttk.Entry(login)
 username_login_entry.grid(row=3, column=1)
 
 password_login_entry = ttk.Entry(login)
 password_login_entry.grid(row=4, column=1)
-
+# buttons to go to main menu and sign up page
 login_button = ttk.Button(login, text="login", width=10, command=lambda: login_func())
 login_button.grid(row=5, column=0)
 
@@ -799,9 +830,10 @@ signup_button = ttk.Button(login, text="sign up", width=10, command=lambda: sign
 signup_button.grid(row=5, column=1)
 
 # signup page
+# title
 signup_title = ttk.Label(signup, text="H.S.Budgeting")
 signup_title.grid(row=0, column=3)
-
+# title labels
 username_label_signup = ttk.Label(signup, text="USERNAME")
 username_label_signup.grid(row=0, column=0)
 
@@ -810,7 +842,7 @@ password_label_signup.grid(row=1, column=0)
 
 password_label_signup_check = ttk.Label(signup, text="PASSWORD AGAIN")
 password_label_signup_check.grid(row=2, column=0)
-
+# entrys for new account information
 username_signup_entry = ttk.Entry(signup)
 username_signup_entry.grid(row=0, column=1)
 
@@ -819,14 +851,15 @@ password_signup_entry.grid(row=1, column=1)
 
 password_signup_entry_check = ttk.Entry(signup)
 password_signup_entry_check.grid(row=2, column=1)
-
+# button that go to login page and save data
 signup_page_button = ttk.Button(signup, text="sign up", width=10, command=lambda: signup_button_func())
 signup_page_button.grid(row=4, column=0)
-
+# button that go to login page and do not save data
 cancel_button = ttk.Button(signup, text="cancel", width=10, command=lambda: go_login(signup))
 cancel_button.grid(row=4, column=1)
 
 # Main menu
+# Title
 main_menu_title = ttk.Label(main_menu, text="H.S.Budgeting")
 main_menu_title.grid(row=0, column=0)
 
